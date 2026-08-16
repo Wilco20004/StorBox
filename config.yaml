@@ -2,7 +2,7 @@ name: StorBox
 version: "1.0.0"
 slug: storbox
 description: Track where your stuff is — locations, containers, items, tags, and photos
-url: https://github.com/wilco20004/storbox
+url: https://github.com/Wilco20004/StorBox
 arch:
   - aarch64
   - amd64
