@@ -15,8 +15,9 @@ accounts, no login, no monetary values — just "where did I put that."
    container or directly in the location if they don't live in a box.
 4. Tag items and containers as you go (e.g. "electronics", "seasonal",
    "fragile") and attach photos so you can recognize them at a glance.
-5. Use the search box on the home page to find an item by name, or click any
-   tag to browse everything tagged with it.
+5. Use the search box in the top nav (available on every page) to find an
+   item by name — results show which container and location it's in. Click
+   any tag to browse everything tagged with it.
 6. Print a QR label from any container or item's page ("Print label") and
    stick it on the physical box. To find it again later, open **Scan** in the
    top nav and point your camera at the label — it jumps straight to that

@@ -10,6 +10,7 @@ import TagPage from './pages/TagPage';
 import ContainerLabel from './pages/ContainerLabel';
 import ItemLabel from './pages/ItemLabel';
 import Scan from './pages/Scan';
+import GlobalSearch from './components/GlobalSearch';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <NavLink to="/" className="brand">
           📦 StorBox
         </NavLink>
+        <GlobalSearch />
         <nav>
           <NavLink to="/" end>
             Locations

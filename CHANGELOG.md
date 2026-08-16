@@ -1,5 +1,11 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.0
+
+- Added a master search box in the top nav, available from every page. Type
+  an item name to jump straight to it; results show which container and
+  location it's in. The home page no longer has its own separate search box.
+
 ## 1.2.0
 
 - Reworked QR labels: the printed code is now a bare id, not a URL, and only
