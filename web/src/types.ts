@@ -26,6 +26,7 @@ export interface Location {
 export interface LocationSummary extends Location {
   container_count: number;
   item_count: number;
+  photos: Photo[];
 }
 
 export interface ContainerSummary {
@@ -54,6 +55,7 @@ export interface ItemSummary {
 }
 
 export interface LocationDetail extends Location {
+  photos: Photo[];
   containers: ContainerSummary[];
   items: ItemSummary[];
 }

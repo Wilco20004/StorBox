@@ -85,3 +85,34 @@ containerPhotoDeleteRouter.delete('/:id', (req, res) => {
   db.prepare('DELETE FROM container_photos WHERE id = ?').run(req.params.id);
   res.status(204).end();
 });
+
+// Mounted at /api/locations/:locationId/photos
+export const locationPhotosRouter = Router({ mergeParams: true });
+
+locationPhotosRouter.post('/', upload.single('photo'), (req, res) => {
+  const locationId = (req.params as any).locationId as string;
+  const location = db.prepare('SELECT id FROM locations WHERE id = ?').get(locationId);
+  if (!location) return res.status(404).json({ error: 'Location not found' });
+  if (!req.file) return res.status(400).json({ error: 'photo file is required' });
+
+  const id = uuid();
+  const now = new Date().toISOString();
+  db.prepare('INSERT INTO location_photos (id, location_id, file_path, created_at) VALUES (?, ?, ?, ?)').run(
+    id,
+    locationId,
+    req.file.filename,
+    now
+  );
+  res.status(201).json(db.prepare('SELECT * FROM location_photos WHERE id = ?').get(id));
+});
+
+// Mounted at /api/location-photos
+export const locationPhotoDeleteRouter = Router();
+
+locationPhotoDeleteRouter.delete('/:id', (req, res) => {
+  const photo = db.prepare('SELECT * FROM location_photos WHERE id = ?').get(req.params.id) as Photo | undefined;
+  if (!photo) return res.status(404).json({ error: 'Photo not found' });
+  fs.unlink(path.join(UPLOADS_DIR, photo.file_path), () => {});
+  db.prepare('DELETE FROM location_photos WHERE id = ?').run(req.params.id);
+  res.status(204).end();
+});

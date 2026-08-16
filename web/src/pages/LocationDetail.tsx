@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { LocationDetail as LocationDetailType } from '../types';
 import TagChip from '../components/TagChip';
+import PhotoManager from '../components/PhotoManager';
 
 export default function LocationDetail() {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +47,15 @@ export default function LocationDetail() {
           </div>
         </div>
       </div>
+
+      <section className="card">
+        <h2>Photos</h2>
+        <PhotoManager
+          photos={location.photos}
+          onUpload={(file) => api.uploadLocationPhoto(location.id, file).then(reload)}
+          onDelete={(photoId) => api.deleteLocationPhoto(photoId).then(reload)}
+        />
+      </section>
 
       <section className="card">
         <div className="actions" style={{ justifyContent: 'space-between', marginTop: 0 }}>

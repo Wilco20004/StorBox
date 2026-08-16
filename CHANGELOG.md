@@ -1,5 +1,10 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.4.0
+
+- Added photos to Locations, matching Containers and Items. The Dashboard's
+  location cards show the first photo as a thumbnail.
+
 ## 1.3.0
 
 - Added a master search box in the top nav, available from every page. Type

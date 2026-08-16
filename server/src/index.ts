@@ -14,6 +14,8 @@ import {
   containerPhotosRouter,
   itemPhotoDeleteRouter,
   itemPhotosRouter,
+  locationPhotoDeleteRouter,
+  locationPhotosRouter,
 } from './routes/photos';
 
 const app = express();
@@ -27,6 +29,8 @@ app.use('/api/containers/:containerId/photos', containerPhotosRouter);
 app.use('/api/container-photos', containerPhotoDeleteRouter);
 app.use('/api/items/:itemId/photos', itemPhotosRouter);
 app.use('/api/item-photos', itemPhotoDeleteRouter);
+app.use('/api/locations/:locationId/photos', locationPhotosRouter);
+app.use('/api/location-photos', locationPhotoDeleteRouter);
 app.use('/api/locations', locationsRouter);
 app.use('/api/containers', containersRouter);
 app.use('/api/items', itemsRouter);

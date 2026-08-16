@@ -51,6 +51,12 @@ export const api = {
   updateLocation: (id: string, data: LocationInput) =>
     request<LocationSummary>(`api/locations/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteLocation: (id: string) => request<void>(`api/locations/${id}`, { method: 'DELETE' }),
+  uploadLocationPhoto: (id: string, file: File) => {
+    const form = new FormData();
+    form.append('photo', file);
+    return request<Photo>(`api/locations/${id}/photos`, { method: 'POST', body: form });
+  },
+  deleteLocationPhoto: (id: string) => request<void>(`api/location-photos/${id}`, { method: 'DELETE' }),
 
   listContainers: () => request<ContainerOption[]>('api/containers'),
   getContainer: (id: string) => request<ContainerDetail>(`api/containers/${id}`),

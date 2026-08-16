@@ -3,8 +3,9 @@
 Track where your stuff actually is: Locations (rooms, garage, attic) contain
 Containers (boxes, shelves, bins) with a position (e.g. "Shelf 1 pos 2" or
 "Ground back"), and Items live either inside a container or directly in a
-location. Items and containers can both be tagged and photographed. No
-accounts, no login, no monetary values — just "where did I put that."
+location. Locations, containers, and items can all have photos, and items and
+containers can both be tagged. No accounts, no login, no monetary values —
+just "where did I put that."
 
 ## Setup
 

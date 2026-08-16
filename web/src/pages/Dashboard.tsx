@@ -30,7 +30,11 @@ export default function Dashboard() {
       {locations.map((loc) => (
         <Link key={loc.id} to={`/locations/${loc.id}`} className="entity-card">
           <div className="entity-card-photo">
-            <div className="entity-card-photo-placeholder">📍</div>
+            {loc.photos[0] ? (
+              <img src={`uploads/${loc.photos[0].file_path}`} alt={loc.name} />
+            ) : (
+              <div className="entity-card-photo-placeholder">📍</div>
+            )}
           </div>
           <div className="entity-card-body">
             <h3>{loc.name}</h3>

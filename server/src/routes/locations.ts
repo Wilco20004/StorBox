@@ -13,7 +13,10 @@ function locationSummary(location: Location) {
   const item_count = (
     db.prepare('SELECT COUNT(*) AS n FROM items WHERE location_id = ?').get(location.id) as { n: number }
   ).n;
-  return { ...location, container_count, item_count };
+  const photos = db
+    .prepare('SELECT * FROM location_photos WHERE location_id = ? ORDER BY created_at')
+    .all(location.id);
+  return { ...location, container_count, item_count, photos };
 }
 
 locationsRouter.get('/', (_req, res) => {
@@ -44,7 +47,11 @@ locationsRouter.get('/:id', (req, res) => {
     photos: db.prepare('SELECT * FROM item_photos WHERE item_id = ? ORDER BY created_at').all(i.id),
   }));
 
-  res.json({ ...location, containers: containersWithExtras, items: itemsWithExtras });
+  const photos = db
+    .prepare('SELECT * FROM location_photos WHERE location_id = ? ORDER BY created_at')
+    .all(location.id);
+
+  res.json({ ...location, photos, containers: containersWithExtras, items: itemsWithExtras });
 });
 
 locationsRouter.post('/', (req, res) => {

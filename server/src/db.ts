@@ -79,6 +79,13 @@ db.exec(`
     created_at TEXT NOT NULL
   );
 
+  CREATE TABLE IF NOT EXISTS location_photos (
+    id TEXT PRIMARY KEY,
+    location_id TEXT NOT NULL REFERENCES locations(id) ON DELETE CASCADE,
+    file_path TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  );
+
   CREATE INDEX IF NOT EXISTS idx_containers_location ON containers(location_id);
   CREATE INDEX IF NOT EXISTS idx_items_container ON items(container_id);
   CREATE INDEX IF NOT EXISTS idx_items_location ON items(location_id);
@@ -86,4 +93,5 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_container_tags_tag ON container_tags(tag_id);
   CREATE INDEX IF NOT EXISTS idx_item_photos_item ON item_photos(item_id);
   CREATE INDEX IF NOT EXISTS idx_container_photos_container ON container_photos(container_id);
+  CREATE INDEX IF NOT EXISTS idx_location_photos_location ON location_photos(location_id);
 `);
