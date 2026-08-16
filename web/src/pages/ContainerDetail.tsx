@@ -51,6 +51,9 @@ export default function ContainerDetail() {
             <Link to={`/containers/${container.id}/edit`} className="button secondary">
               Edit
             </Link>
+            <Link to={`/containers/${container.id}/label`} className="button secondary">
+              Print label
+            </Link>
             <button className="button danger" onClick={handleDelete}>
               Delete
             </button>

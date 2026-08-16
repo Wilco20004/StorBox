@@ -62,6 +62,9 @@ export default function ItemDetail() {
             <Link to={`/items/${item.id}/edit`} className="button secondary">
               Edit
             </Link>
+            <Link to={`/items/${item.id}/label`} className="button secondary">
+              Print label
+            </Link>
             <button className="button danger" onClick={handleDelete}>
               Delete
             </button>

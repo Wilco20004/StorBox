@@ -428,6 +428,41 @@ body {
   line-height: 1;
 }
 
+.label-sheet {
+  background: white;
+  border: 1px solid var(--gray-300);
+  border-radius: 10px;
+  padding: 1.5rem;
+  max-width: 280px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.label-sheet h2 {
+  margin: 0.75rem 0 0.15rem;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .topbar {
+    display: none;
+  }
+
+  .content {
+    padding: 0;
+    max-width: none;
+  }
+
+  .label-sheet {
+    border: none;
+    box-shadow: none;
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 640px) {
   .content {
     padding: 1rem;

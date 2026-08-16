@@ -7,6 +7,8 @@ import ContainerDetail from './pages/ContainerDetail';
 import ItemForm from './pages/ItemForm';
 import ItemDetail from './pages/ItemDetail';
 import TagPage from './pages/TagPage';
+import ContainerLabel from './pages/ContainerLabel';
+import ItemLabel from './pages/ItemLabel';
 
 export default function App() {
   return (
@@ -31,9 +33,11 @@ export default function App() {
           <Route path="/locations/:locationId/containers/new" element={<ContainerForm />} />
           <Route path="/containers/:id" element={<ContainerDetail />} />
           <Route path="/containers/:id/edit" element={<ContainerForm />} />
+          <Route path="/containers/:id/label" element={<ContainerLabel />} />
           <Route path="/items/new" element={<ItemForm />} />
           <Route path="/items/:id" element={<ItemDetail />} />
           <Route path="/items/:id/edit" element={<ItemForm />} />
+          <Route path="/items/:id/label" element={<ItemLabel />} />
           <Route path="/tags/:name" element={<TagPage />} />
         </Routes>
       </main>
