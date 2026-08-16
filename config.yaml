@@ -1,0 +1,23 @@
+name: StorBox
+version: "1.0.0"
+slug: storbox
+description: Track where your stuff is — locations, containers, items, tags, and photos
+url: https://github.com/wilco20004/storbox
+arch:
+  - aarch64
+  - amd64
+  - armv7
+init: false
+startup: application
+boot: auto
+ingress: true
+ingress_port: 8090
+panel_icon: mdi:archive-outline
+panel_title: StorBox
+webui: "http://[HOST]:[PORT:8090]/"
+ports:
+  8090/tcp: 8090
+ports_description:
+  8090/tcp: StorBox web UI (optional direct access; not required when using Ingress)
+options: {}
+schema: {}
