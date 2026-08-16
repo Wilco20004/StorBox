@@ -428,6 +428,13 @@ body {
   line-height: 1;
 }
 
+.qr-scanner-video {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 10px;
+  background: black;
+}
+
 .label-sheet {
   background: white;
   border: 1px solid var(--gray-300);

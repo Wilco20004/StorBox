@@ -4,14 +4,12 @@ import { Link } from 'react-router-dom';
 export default function PrintableLabel({
   title,
   subtitle,
-  url,
-  viaIngress,
+  code,
   backTo,
 }: {
   title: string;
   subtitle?: string | null;
-  url: string | null;
-  viaIngress: boolean;
+  code: string;
   backTo: string;
 }) {
   return (
@@ -20,27 +18,19 @@ export default function PrintableLabel({
         <Link to={backTo}>← Back</Link>
       </p>
 
-      {viaIngress && (
-        <p className="error no-print">
-          You're viewing StorBox through Home Assistant's sidebar, which uses a temporary link that
-          changes between sessions. Open the add-on's direct "Open Web UI" link instead (see the add-on's
-          Info tab), then come back to this label page from there so the printed QR code keeps working.
-        </p>
-      )}
+      <div className="label-sheet">
+        <QRCodeSVG value={code} size={220} />
+        <h2>{title}</h2>
+        {subtitle && <p className="muted">{subtitle}</p>}
+      </div>
 
-      {url && (
-        <div className="label-sheet">
-          <QRCodeSVG value={url} size={220} />
-          <h2>{title}</h2>
-          {subtitle && <p className="muted">{subtitle}</p>}
-        </div>
-      )}
+      <p className="muted small no-print">
+        This code only means something to StorBox's own scanner (Scan in the top nav) — it's not a link.
+      </p>
 
-      {url && (
-        <button className="button no-print" onClick={() => window.print()}>
-          Print
-        </button>
-      )}
+      <button className="button no-print" onClick={() => window.print()}>
+        Print
+      </button>
     </div>
   );
 }

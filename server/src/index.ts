@@ -8,6 +8,7 @@ import { locationsRouter } from './routes/locations';
 import { containersRouter } from './routes/containers';
 import { itemsRouter } from './routes/items';
 import { tagsRouter } from './routes/tags';
+import { lookupRouter } from './routes/lookup';
 import {
   containerPhotoDeleteRouter,
   containerPhotosRouter,
@@ -30,6 +31,7 @@ app.use('/api/locations', locationsRouter);
 app.use('/api/containers', containersRouter);
 app.use('/api/items', itemsRouter);
 app.use('/api/tags', tagsRouter);
+app.use('/api/lookup', lookupRouter);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 

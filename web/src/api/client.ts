@@ -86,6 +86,9 @@ export const api = {
   deleteItemPhoto: (id: string) => request<void>(`api/item-photos/${id}`, { method: 'DELETE' }),
 
   listTags: () => request<TagWithCounts[]>('api/tags'),
+
+  lookupCode: (code: string) =>
+    request<{ type: 'item' | 'container'; id: string }>(`api/lookup/${encodeURIComponent(code)}`),
 };
 
 export type { ItemSummary };

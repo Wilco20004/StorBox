@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { ItemDetail } from '../types';
-import { getStableUrl } from '../utils/stableUrl';
 import PrintableLabel from '../components/PrintableLabel';
 
 export default function ItemLabel() {
@@ -17,16 +16,7 @@ export default function ItemLabel() {
   if (error) return <p className="error">{error}</p>;
   if (!item || !id) return <p>Loading...</p>;
 
-  const { url, viaIngress } = getStableUrl(`#/items/${id}`);
   const subtitle = item.container ? item.container.name : item.location?.name;
 
-  return (
-    <PrintableLabel
-      title={item.name}
-      subtitle={subtitle}
-      url={url}
-      viaIngress={viaIngress}
-      backTo={`/items/${id}`}
-    />
-  );
+  return <PrintableLabel title={item.name} subtitle={subtitle} code={id} backTo={`/items/${id}`} />;
 }

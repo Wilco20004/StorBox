@@ -9,6 +9,7 @@ import ItemDetail from './pages/ItemDetail';
 import TagPage from './pages/TagPage';
 import ContainerLabel from './pages/ContainerLabel';
 import ItemLabel from './pages/ItemLabel';
+import Scan from './pages/Scan';
 
 export default function App() {
   return (
@@ -21,12 +22,14 @@ export default function App() {
           <NavLink to="/" end>
             Locations
           </NavLink>
+          <NavLink to="/scan">Scan</NavLink>
           <NavLink to="/locations/new">Add location</NavLink>
         </nav>
       </header>
       <main className="content">
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/scan" element={<Scan />} />
           <Route path="/locations/new" element={<LocationForm />} />
           <Route path="/locations/:id" element={<LocationDetail />} />
           <Route path="/locations/:id/edit" element={<LocationForm />} />

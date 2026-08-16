@@ -1,5 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.2.0
+
+- Reworked QR labels: the printed code is now a bare id, not a URL, and only
+  means something to StorBox's own in-app scanner (new **Scan** page, uses
+  your camera to read a label and jump straight to that container/item).
+  Avoids the previous approach's Ingress-vs-direct-URL caveat entirely, since
+  the code no longer needs to resolve outside the app.
+
 ## 1.1.0
 
 - Added printable QR code labels for containers and items. The code links to
