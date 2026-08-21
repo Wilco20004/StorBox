@@ -77,3 +77,11 @@ export interface ItemDetail extends ItemSummary {
   container: ContainerSummary | null;
   location: Location | null;
 }
+
+export interface LabelTemplate {
+  id: string;
+  name: string;
+  label_size: string;
+  length_mm: number | null;
+  variables: string[];
+}

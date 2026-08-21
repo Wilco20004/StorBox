@@ -3,6 +3,7 @@ import {
   ContainerOption,
   ItemDetail,
   ItemSummary,
+  LabelTemplate,
   LocationDetail,
   LocationSummary,
   Photo,
@@ -95,6 +96,25 @@ export const api = {
 
   lookupCode: (code: string) =>
     request<{ type: 'item' | 'container'; id: string }>(`api/lookup/${encodeURIComponent(code)}`),
+
+  listLabelTemplates: () => request<LabelTemplate[]>('api/labelforge/templates'),
+  renderLabel: async (template_id: string, variables: Record<string, string>) => {
+    const res = await fetch('api/labelforge/render', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ template_id, variables }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(body.error || `Request failed: ${res.status}`);
+    }
+    return URL.createObjectURL(await res.blob());
+  },
+  printLabel: (template_id: string, variables: Record<string, string>, copies: number) =>
+    request<{ ok: true }>('api/labelforge/print', {
+      method: 'POST',
+      body: JSON.stringify({ template_id, variables, copies }),
+    }),
 };
 
 export type { ItemSummary };

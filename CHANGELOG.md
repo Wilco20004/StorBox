@@ -1,5 +1,26 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.5.1
+
+- Defined a fixed set of variable names StorBox sends to LabelForge —
+  `name`, `location`, `container`, `position`, `code` — documented in
+  DOCS.md, so a LabelForge template built with those exact names comes out
+  fully auto-filled with no manual typing. The print panel now lists which
+  of these apply to the specific container/item you're printing. Pairs with
+  LabelForge 1.1.0's QR-code-from-variable image type: give a template a
+  `{{code}}` QR image to get a real scannable code on the printed label,
+  instead of a static picture.
+
+## 1.5.0
+
+- Added real label printing via the LabelForge add-on: each container/item's
+  label page now has a "Print on Brother QL (via LabelForge)" panel — pick a
+  template, fill in its variables (prefilled with the item/container name,
+  position, and code where they match), preview, and print. This is in
+  addition to the existing browser-printed QR label, not a replacement.
+  LabelForge's URL is configurable via the new **labelforge_url** add-on
+  option.
+
 ## 1.4.0
 
 - Added photos to Locations, matching Containers and Items. The Dashboard's

@@ -1,0 +1,163 @@
+import { useEffect, useRef, useState } from 'react';
+import { api } from '../api/client';
+import { LabelTemplate } from '../types';
+
+export default function LabelForgePrint({ seed }: { seed: Record<string, string> }) {
+  const [templates, setTemplates] = useState<LabelTemplate[] | null>(null);
+  const [templateId, setTemplateId] = useState('');
+  const [values, setValues] = useState<Record<string, string>>({});
+  const [copies, setCopies] = useState(1);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const previewUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    api
+      .listLabelTemplates()
+      .then(setTemplates)
+      .catch((e) => setError(`Could not reach LabelForge: ${e.message}`));
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    };
+  }, []);
+
+  const template = templates?.find((t) => t.id === templateId) || null;
+
+  function selectTemplate(id: string) {
+    setTemplateId(id);
+    setStatus(null);
+    setError(null);
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    previewUrlRef.current = null;
+    setPreviewUrl(null);
+    const t = templates?.find((tpl) => tpl.id === id);
+    const next: Record<string, string> = {};
+    t?.variables.forEach((v) => {
+      next[v] = seed[v] || '';
+    });
+    setValues(next);
+  }
+
+  async function handlePreview() {
+    if (!template) return;
+    setBusy(true);
+    setError(null);
+    setStatus(null);
+    try {
+      const url = await api.renderLabel(template.id, values);
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = url;
+      setPreviewUrl(url);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handlePrint() {
+    if (!template) return;
+    setBusy(true);
+    setError(null);
+    setStatus(null);
+    try {
+      await api.printLabel(template.id, values, copies);
+      setStatus('Sent to the printer.');
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (templates && templates.length === 0) {
+    return (
+      <div className="card form-card labelforge-print no-print">
+        <h3>Print on Brother QL (via LabelForge)</h3>
+        <p className="muted small">No templates yet — create one in LabelForge, then come back here.</p>
+      </div>
+    );
+  }
+
+  const available = Object.entries(seed)
+    .filter(([, v]) => v)
+    .map(([k]) => k);
+
+  return (
+    <div className="card form-card labelforge-print no-print">
+      <h3>Print on Brother QL (via LabelForge)</h3>
+      {available.length > 0 && (
+        <p className="muted small">
+          This label can auto-fill a template's <code>{'{{...}}'}</code> fields named:{' '}
+          {available.map((k) => (
+            <code key={k}>{k} </code>
+          ))}
+          — including a QR image field set to <code>{'{{code}}'}</code>.
+        </p>
+      )}
+      {error && <p className="error">{error}</p>}
+      {!templates && !error && <p className="muted">Loading templates...</p>}
+      {templates && templates.length > 0 && (
+        <>
+          <label>
+            Template
+            <select value={templateId} onChange={(e) => selectTemplate(e.target.value)}>
+              <option value="">Choose a template...</option>
+              {templates.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name} ({t.label_size})
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {template && (
+            <>
+              {template.variables.map((v) => (
+                <label key={v}>
+                  {v}
+                  {seed[v] && <span className="muted small"> (auto-filled)</span>}
+                  <input
+                    value={values[v] || ''}
+                    onChange={(e) => setValues({ ...values, [v]: e.target.value })}
+                  />
+                </label>
+              ))}
+              <label>
+                Copies
+                <input
+                  type="number"
+                  min={1}
+                  value={copies}
+                  onChange={(e) => setCopies(Math.max(1, Number(e.target.value) || 1))}
+                />
+              </label>
+
+              {previewUrl && (
+                <div className="labelforge-preview">
+                  <img src={previewUrl} alt="Label preview" />
+                </div>
+              )}
+
+              {status && <p className="muted small">{status}</p>}
+
+              <div className="actions">
+                <button className="button secondary" type="button" onClick={handlePreview} disabled={busy}>
+                  Preview
+                </button>
+                <button className="button" type="button" onClick={handlePrint} disabled={busy}>
+                  {busy ? 'Working...' : 'Print'}
+                </button>
+              </div>
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

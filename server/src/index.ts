@@ -9,6 +9,7 @@ import { containersRouter } from './routes/containers';
 import { itemsRouter } from './routes/items';
 import { tagsRouter } from './routes/tags';
 import { lookupRouter } from './routes/lookup';
+import { labelforgeRouter } from './routes/labelforge';
 import {
   containerPhotoDeleteRouter,
   containerPhotosRouter,
@@ -36,6 +37,7 @@ app.use('/api/containers', containersRouter);
 app.use('/api/items', itemsRouter);
 app.use('/api/tags', tagsRouter);
 app.use('/api/lookup', lookupRouter);
+app.use('/api/labelforge', labelforgeRouter);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 

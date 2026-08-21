@@ -461,6 +461,19 @@ body {
   margin: 0.75rem 0 0.15rem;
 }
 
+.labelforge-preview {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  background: var(--gray-100);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.labelforge-preview img {
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+
 @media print {
   .no-print {
     display: none !important;
