@@ -84,4 +84,5 @@ export interface LabelTemplate {
   label_size: string;
   length_mm: number | null;
   variables: string[];
+  image_variable: string | null;
 }

@@ -1,15 +1,23 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.5.2
+
+- Switched to LabelForge 1.2.0's image "override variable": StorBox now
+  generates the QR code itself (client-side, from `code`) and sends it as
+  whatever variable the template's image declares, instead of relying on
+  LabelForge to render a `{{code}}`-templated QR internally (LabelForge
+  1.1.0/StorBox 1.5.1's approach). The print panel shows that field as
+  "auto-filled with this box's QR code" rather than a text box — still
+  zero typing.
+
 ## 1.5.1
 
 - Defined a fixed set of variable names StorBox sends to LabelForge —
   `name`, `location`, `container`, `position`, `code` — documented in
   DOCS.md, so a LabelForge template built with those exact names comes out
-  fully auto-filled with no manual typing. The print panel now lists which
-  of these apply to the specific container/item you're printing. Pairs with
-  LabelForge 1.1.0's QR-code-from-variable image type: give a template a
-  `{{code}}` QR image to get a real scannable code on the printed label,
-  instead of a static picture.
+  fully auto-filled with no manual typing. The print panel lists which of
+  these apply to the specific container/item you're printing. (Superseded
+  by 1.5.2 for the image/QR part above — text variables unchanged.)
 
 ## 1.5.0
 

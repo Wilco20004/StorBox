@@ -37,8 +37,8 @@ those.
 
 ### Variables StorBox provides
 
-Design your LabelForge template's text fields (and its QR image field, see
-below) using exactly these names to get a fully auto-filled label:
+Design your LabelForge template's text fields using exactly these names to
+get a fully auto-filled label:
 
 | Variable    | Meaning                                              | Container labels | Item labels |
 | ----------- | ----------------------------------------------------- | ----------------- | ----------- |
@@ -49,9 +49,12 @@ below) using exactly these names to get a fully auto-filled label:
 | `code`      | The bare id also used for StorBox's own QR label       | ✓ | ✓ |
 
 For a label that's scannable by StorBox's own **Scan** page, give the
-template an image field of type **Use a QR code** (LabelForge 1.1.0+) with
-content `{{code}}` — LabelForge renders an actual QR code from that id at
-print time, the same code StorBox's browser-printed QR label uses.
+template's image an **override variable** (LabelForge 1.2.0+, any name you
+like — set it in LabelForge's template editor). StorBox detects it (via the
+template's `image_variable`) and automatically generates a real QR code of
+`code` to fill it, replacing whatever picture the template uses as its
+fallback/preview. Nothing to type — the print panel shows that variable as
+"auto-filled with this box's QR code" instead of a text box.
 
 The panel only auto-fills variables that apply to the specific
 container/item you're printing from (e.g. `container` and `position` are

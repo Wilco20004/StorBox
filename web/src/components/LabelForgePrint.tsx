@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import QRCode from 'qrcode';
 import { api } from '../api/client';
 import { LabelTemplate } from '../types';
 
@@ -28,7 +29,7 @@ export default function LabelForgePrint({ seed }: { seed: Record<string, string>
 
   const template = templates?.find((t) => t.id === templateId) || null;
 
-  function selectTemplate(id: string) {
+  async function selectTemplate(id: string) {
     setTemplateId(id);
     setStatus(null);
     setError(null);
@@ -40,6 +41,12 @@ export default function LabelForgePrint({ seed }: { seed: Record<string, string>
     t?.variables.forEach((v) => {
       next[v] = seed[v] || '';
     });
+    if (t?.image_variable && seed.code) {
+      // The template's image can be overridden by a caller-supplied variable —
+      // hand it a real QR code of this box's own code, generated client-side,
+      // instead of leaving it to the template's static fallback picture.
+      next[t.image_variable] = await QRCode.toDataURL(seed.code, { margin: 1 });
+    }
     setValues(next);
   }
 
@@ -97,7 +104,7 @@ export default function LabelForgePrint({ seed }: { seed: Record<string, string>
           {available.map((k) => (
             <code key={k}>{k} </code>
           ))}
-          — including a QR image field set to <code>{'{{code}}'}</code>.
+          — and if the template's image has an override variable, it's auto-filled with this box's QR code.
         </p>
       )}
       {error && <p className="error">{error}</p>}
@@ -118,16 +125,22 @@ export default function LabelForgePrint({ seed }: { seed: Record<string, string>
 
           {template && (
             <>
-              {template.variables.map((v) => (
-                <label key={v}>
-                  {v}
-                  {seed[v] && <span className="muted small"> (auto-filled)</span>}
-                  <input
-                    value={values[v] || ''}
-                    onChange={(e) => setValues({ ...values, [v]: e.target.value })}
-                  />
-                </label>
-              ))}
+              {template.variables.map((v) =>
+                v === template.image_variable ? (
+                  <p key={v} className="muted small">
+                    {v}: {values[v] ? 'auto-filled with this box\'s QR code' : 'no code available — using the template\'s default image'}
+                  </p>
+                ) : (
+                  <label key={v}>
+                    {v}
+                    {seed[v] && <span className="muted small"> (auto-filled)</span>}
+                    <input
+                      value={values[v] || ''}
+                      onChange={(e) => setValues({ ...values, [v]: e.target.value })}
+                    />
+                  </label>
+                )
+              )}
               <label>
                 Copies
                 <input
