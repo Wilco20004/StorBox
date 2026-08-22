@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Photo } from '../types';
+import CameraCapture from './CameraCapture';
 
 export default function PhotoManager({
   photos,
@@ -10,15 +11,12 @@ export default function PhotoManager({
   onUpload: (file: File) => Promise<unknown>;
   onDelete: (photoId: string) => Promise<unknown>;
 }) {
-  const uploadInput = useRef<HTMLInputElement>(null);
-  const captureInput = useRef<HTMLInputElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) return;
+  async function upload(file: File) {
     setUploading(true);
     setError(null);
     try {
@@ -28,6 +26,17 @@ export default function PhotoManager({
     } finally {
       setUploading(false);
     }
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (file) await upload(file);
+  }
+
+  async function handleCapture(file: File) {
+    setShowCamera(false);
+    await upload(file);
   }
 
   return (
@@ -44,38 +53,23 @@ export default function PhotoManager({
           ))}
         </div>
       )}
-      {/* capture="environment" opens the camera directly on mobile (ignored on desktop, falling
-          back to a normal file picker) — unlike getUserMedia, it needs no secure context, so it
-          works over the plain-HTTP LAN access this app commonly runs under. */}
-      <input ref={uploadInput} type="file" accept="image/*" onChange={handleFile} style={{ display: 'none' }} />
-      <input
-        ref={captureInput}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        onChange={handleFile}
-        style={{ display: 'none' }}
-      />
+      <input ref={fileInput} type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
       <div className="actions">
         <button
           type="button"
           className="button secondary small"
-          onClick={() => uploadInput.current?.click()}
+          onClick={() => fileInput.current?.click()}
           disabled={uploading}
         >
           Upload photo
         </button>
-        <button
-          type="button"
-          className="button secondary small"
-          onClick={() => captureInput.current?.click()}
-          disabled={uploading}
-        >
+        <button type="button" className="button secondary small" onClick={() => setShowCamera(true)} disabled={uploading}>
           Take photo
         </button>
         {uploading && <span className="muted small">Uploading...</span>}
       </div>
       {error && <p className="error">{error}</p>}
+      {showCamera && <CameraCapture onCapture={handleCapture} onCancel={() => setShowCamera(false)} />}
     </div>
   );
 }

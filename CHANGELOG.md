@@ -1,5 +1,16 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.6.2
+
+- Replaced 1.6.1's **Take photo** (a plain file input's `capture`
+  attribute) with a real in-page camera view (`getUserMedia`, same
+  approach as the Scan page): confirmed on a real Android phone that the
+  `capture` attribute doesn't reliably open the camera any more — modern
+  Chrome's system Photo Picker intercepts the file input and shows the
+  gallery instead, regardless of the attribute. The live view needs a
+  secure origin same as Scan does; see "Camera access for scanning and
+  taking photos" below.
+
 ## 1.6.1
 
 - Every photo uploader (locations, containers, items) now offers **Take

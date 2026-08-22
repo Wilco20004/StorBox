@@ -85,16 +85,18 @@ every path rather than LabelForge's JSON API. If the panel shows "Could not
 reach LabelForge", check that option and that the LabelForge add-on is
 running.
 
-## Camera access for scanning
+## Camera access for scanning and taking photos
 
-Scanning uses your browser's camera (`getUserMedia`), which browsers only
-allow on secure origins — HTTPS, or `localhost`. If StorBox is served over
-plain HTTP on your local network (common for a bare IP address like
-`http://10.1.1.3:8090`), most browsers will block camera access for the Scan
-page even though the rest of the app works fine. Access it over HTTPS (e.g.
-Home Assistant's own SSL setup, or Nabu Casa remote access) to use the
-scanner, or configure your browser to trust that origin as secure for
-testing on your own trusted home network.
+Scanning, and the **Take photo** button on any photo uploader, both use
+your browser's camera (`getUserMedia`), which browsers only allow on secure
+origins — HTTPS, or `localhost`. If StorBox is served over plain HTTP on
+your local network (common for a bare IP address like
+`http://10.1.1.3:8090`), most browsers will block camera access there even
+though the rest of the app works fine — **Take photo** will show an error
+naming the problem and point you at **Upload photo** instead. Access
+StorBox over HTTPS (e.g. Home Assistant's own SSL setup, or Nabu Casa
+remote access) to use the camera, or configure your browser to trust that
+origin as secure for testing on your own trusted home network.
 
 ## Data persistence
 

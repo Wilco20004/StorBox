@@ -442,6 +442,32 @@ body {
   background: black;
 }
 
+.camera-capture-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.camera-capture {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.camera-capture-video {
+  width: 100%;
+  border-radius: 8px;
+  background: black;
+}
+
 .label-sheet {
   background: white;
   border: 1px solid var(--gray-300);
