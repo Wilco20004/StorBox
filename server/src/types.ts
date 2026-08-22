@@ -8,7 +8,7 @@ export interface Location {
 
 export interface Container {
   id: string;
-  location_id: string;
+  location_id: string | null;
   name: string;
   position: string | null;
   description: string | null;

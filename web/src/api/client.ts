@@ -32,7 +32,7 @@ export interface ContainerInput {
   name: string;
   position?: string | null;
   description?: string | null;
-  location_id: string;
+  location_id: string | null;
   tags: string[];
 }
 
@@ -63,6 +63,7 @@ export const api = {
   getContainer: (id: string) => request<ContainerDetail>(`api/containers/${id}`),
   listContainersByTag: (tag: string) =>
     request<ContainerDetail[]>(`api/containers?tag=${encodeURIComponent(tag)}`),
+  listHoldingContainers: () => request<ContainerDetail[]>('api/containers?holding=1'),
   createContainer: (data: ContainerInput) =>
     request<ContainerDetail>('api/containers', { method: 'POST', body: JSON.stringify(data) }),
   updateContainer: (id: string, data: ContainerInput) =>

@@ -26,6 +26,7 @@ export default function App() {
           </NavLink>
           <NavLink to="/scan">Scan</NavLink>
           <NavLink to="/locations/new">Add location</NavLink>
+          <NavLink to="/containers/new">Add container</NavLink>
         </nav>
       </header>
       <main className="content">
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/locations/:id" element={<LocationDetail />} />
           <Route path="/locations/:id/edit" element={<LocationForm />} />
           <Route path="/locations/:locationId/containers/new" element={<ContainerForm />} />
+          <Route path="/containers/new" element={<ContainerForm />} />
           <Route path="/containers/:id" element={<ContainerDetail />} />
           <Route path="/containers/:id/edit" element={<ContainerForm />} />
           <Route path="/containers/:id/label" element={<ContainerLabel />} />

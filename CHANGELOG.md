@@ -1,5 +1,17 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.6.0
+
+- Containers can now exist without a location ("Holding" — for packing
+  before you've decided where something will live) and can be moved
+  between locations, or in and out of Holding, from a new **Location**
+  section on the container's own page. The dashboard has a new **Holding**
+  section listing them, and **Add container** in the top nav creates one
+  without requiring a location up front. Existing databases are migrated
+  automatically on first start after upgrading (a one-time internal table
+  rebuild, since SQLite can't just relax a NOT NULL constraint in place) —
+  no data is lost.
+
 ## 1.5.2
 
 - Switched to LabelForge 1.2.0's image "override variable": StorBox now

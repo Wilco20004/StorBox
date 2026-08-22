@@ -26,6 +26,20 @@ just "where did I put that."
    scanner; it's not a link, so it keeps working however you access StorBox
    (Ingress or direct).
 
+## Holding containers and moving between locations
+
+A container doesn't need a location right away. Use **Add container** in
+the top nav (or "Add a holding container" on the dashboard) to create one
+without picking a location — it shows up under **Holding** on the
+dashboard instead of under a location. Pack it, tag it, add items to it
+like any other container, and once it's full, open it and use the
+**Location** section to move it to wherever it'll actually live.
+
+That same **Location** section works on any container, not just holding
+ones — pick a different location and hit **Move** to relocate it, or
+**Move to Holding** to pull it back out of a location. Nothing about the
+container's items, tags, or photos changes when it moves.
+
 ## Printing on a Brother QL label printer (via LabelForge)
 
 If you also run the **LabelForge** add-on, the same label page has a

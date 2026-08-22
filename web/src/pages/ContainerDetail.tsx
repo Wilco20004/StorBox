@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
-import { ContainerDetail as ContainerDetailType } from '../types';
+import { ContainerDetail as ContainerDetailType, LocationSummary } from '../types';
 import TagChip from '../components/TagChip';
 import PhotoManager from '../components/PhotoManager';
 
@@ -9,6 +9,9 @@ export default function ContainerDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [container, setContainer] = useState<ContainerDetailType | null>(null);
+  const [locations, setLocations] = useState<LocationSummary[]>([]);
+  const [moveTo, setMoveTo] = useState('');
+  const [moving, setMoving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function reload() {
@@ -17,6 +20,9 @@ export default function ContainerDetail() {
   }
 
   useEffect(reload, [id]);
+  useEffect(() => {
+    api.listLocations().then(setLocations).catch((e) => setError(e.message));
+  }, []);
 
   async function handleDelete() {
     if (!id || !container) return;
@@ -25,16 +31,42 @@ export default function ContainerDetail() {
     navigate(container.location ? `/locations/${container.location.id}` : '/');
   }
 
+  async function handleMove(locationId: string | null) {
+    if (!container) return;
+    setMoving(true);
+    setError(null);
+    try {
+      await api.updateContainer(container.id, {
+        name: container.name,
+        position: container.position,
+        description: container.description,
+        tags: container.tags.map((t) => t.name),
+        location_id: locationId,
+      });
+      setMoveTo('');
+      reload();
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setMoving(false);
+    }
+  }
+
   if (error) return <p className="error">{error}</p>;
   if (!container) return <p>Loading...</p>;
 
   return (
     <div>
-      {container.location && (
-        <p className="breadcrumb">
-          <Link to="/">Locations</Link> / <Link to={`/locations/${container.location.id}`}>{container.location.name}</Link>
-        </p>
-      )}
+      <p className="breadcrumb">
+        <Link to="/">Locations</Link>
+        {container.location && (
+          <>
+            {' '}
+            / <Link to={`/locations/${container.location.id}`}>{container.location.name}</Link>
+          </>
+        )}
+        {!container.location && ' / Holding'}
+      </p>
       <div className="detail-header">
         <div>
           <h1>{container.name}</h1>
@@ -60,6 +92,44 @@ export default function ContainerDetail() {
           </div>
         </div>
       </div>
+
+      <section className="card">
+        <h2>Location</h2>
+        <p className="muted">
+          {container.location ? (
+            <>
+              Currently in <Link to={`/locations/${container.location.id}`}>{container.location.name}</Link>.
+            </>
+          ) : (
+            'Currently in Holding — not yet placed in a location.'
+          )}
+        </p>
+        <div className="actions">
+          <select value={moveTo} onChange={(e) => setMoveTo(e.target.value)}>
+            <option value="">Move to...</option>
+            {locations
+              .filter((l) => l.id !== container.location?.id)
+              .map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+          </select>
+          <button
+            type="button"
+            className="button secondary"
+            disabled={!moveTo || moving}
+            onClick={() => handleMove(moveTo)}
+          >
+            Move
+          </button>
+          {container.location && (
+            <button type="button" className="button secondary" disabled={moving} onClick={() => handleMove(null)}>
+              Move to Holding
+            </button>
+          )}
+        </div>
+      </section>
 
       <section className="card">
         <h2>Photos</h2>

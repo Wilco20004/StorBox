@@ -31,7 +31,7 @@ export interface LocationSummary extends Location {
 
 export interface ContainerSummary {
   id: string;
-  location_id: string;
+  location_id: string | null;
   name: string;
   position: string | null;
   description: string | null;
@@ -69,8 +69,8 @@ export interface ContainerOption {
   id: string;
   name: string;
   position: string | null;
-  location_id: string;
-  location_name: string;
+  location_id: string | null;
+  location_name: string | null;
 }
 
 export interface ItemDetail extends ItemSummary {

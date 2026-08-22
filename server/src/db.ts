@@ -28,7 +28,7 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS containers (
     id TEXT PRIMARY KEY,
-    location_id TEXT NOT NULL REFERENCES locations(id) ON DELETE CASCADE,
+    location_id TEXT REFERENCES locations(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     position TEXT,
     description TEXT,
@@ -95,3 +95,27 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_container_photos_container ON container_photos(container_id);
   CREATE INDEX IF NOT EXISTS idx_location_photos_location ON location_photos(location_id);
 `);
+
+// "Holding" containers (not yet placed in a location) need location_id to accept
+// NULL. SQLite has no ALTER COLUMN, so an existing database — created before this
+// changed from NOT NULL — needs its containers table rebuilt once.
+const containerLocationCol = (db.prepare('PRAGMA table_info(containers)').all() as { name: string; notnull: number }[]).find(
+  (c) => c.name === 'location_id'
+);
+if (containerLocationCol?.notnull) {
+  db.exec(`
+    CREATE TABLE containers_new (
+      id TEXT PRIMARY KEY,
+      location_id TEXT REFERENCES locations(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      position TEXT,
+      description TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    INSERT INTO containers_new SELECT id, location_id, name, position, description, created_at, updated_at FROM containers;
+    DROP TABLE containers;
+    ALTER TABLE containers_new RENAME TO containers;
+    CREATE INDEX IF NOT EXISTS idx_containers_location ON containers(location_id);
+  `);
+}
