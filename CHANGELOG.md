@@ -1,5 +1,14 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.6.1
+
+- Every photo uploader (locations, containers, items) now offers **Take
+  photo** alongside **Upload photo** — on a phone, it opens the camera
+  directly instead of the gallery/file picker. Uses a plain file input's
+  `capture` attribute rather than `getUserMedia`, so it needs no secure
+  context and works over the plain-HTTP LAN access this app commonly runs
+  under.
+
 ## 1.6.0
 
 - Containers can now exist without a location ("Holding" — for packing

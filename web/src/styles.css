@@ -399,11 +399,6 @@ body {
   padding: 0.2rem;
 }
 
-.photo-manager input[type='file'] {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-}
-
 .photo-grid {
   display: flex;
   flex-wrap: wrap;
