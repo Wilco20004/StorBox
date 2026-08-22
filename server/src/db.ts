@@ -26,6 +26,14 @@ db.exec(`
     updated_at TEXT NOT NULL
   );
 
+  CREATE TABLE IF NOT EXISTS rooms (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    ha_area_id TEXT UNIQUE,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
   CREATE TABLE IF NOT EXISTS containers (
     id TEXT PRIMARY KEY,
     location_id TEXT REFERENCES locations(id) ON DELETE CASCADE,
@@ -36,15 +44,47 @@ db.exec(`
     updated_at TEXT NOT NULL
   );
 
+  -- A product is the "kind of thing" several separate item instances share
+  -- (e.g. "2 point plug single" when you own 7 of them scattered around the
+  -- house) — created on demand the first time two items get linked, not
+  -- managed as its own up-front CRUD concept.
+  CREATE TABLE IF NOT EXISTS products (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  -- An item lives in exactly one of: a container, a location directly, or a
+  -- room (out of storage and in active use, e.g. moved to the living room).
+  -- product_id is unrelated to placement — it's which other item instances
+  -- (if any) this one is the "same kind of thing" as.
   CREATE TABLE IF NOT EXISTS items (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
     container_id TEXT REFERENCES containers(id) ON DELETE CASCADE,
     location_id TEXT REFERENCES locations(id) ON DELETE CASCADE,
+    room_id TEXT REFERENCES rooms(id) ON DELETE CASCADE,
+    product_id TEXT REFERENCES products(id) ON DELETE SET NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
-    CHECK ((container_id IS NULL) != (location_id IS NULL))
+    CHECK ((container_id IS NOT NULL) + (location_id IS NOT NULL) + (room_id IS NOT NULL) = 1)
+  );
+
+  -- A loan tracks an item lent to someone outside the household inventory.
+  -- returned_at IS NULL means it's still out. An item can have many loans
+  -- over time, but the app only allows one active (unreturned) at a time.
+  CREATE TABLE IF NOT EXISTS loans (
+    id TEXT PRIMARY KEY,
+    item_id TEXT NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+    borrower TEXT NOT NULL,
+    lent_at TEXT NOT NULL,
+    due_at TEXT,
+    returned_at TEXT,
+    notes TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
   );
 
   CREATE TABLE IF NOT EXISTS tags (
@@ -94,7 +134,11 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_item_photos_item ON item_photos(item_id);
   CREATE INDEX IF NOT EXISTS idx_container_photos_container ON container_photos(container_id);
   CREATE INDEX IF NOT EXISTS idx_location_photos_location ON location_photos(location_id);
+  CREATE INDEX IF NOT EXISTS idx_loans_item ON loans(item_id);
 `);
+// idx_items_product is created further below, once product_id definitely
+// exists (either from this fresh CREATE TABLE or the ADD COLUMN migration) —
+// same reason idx_items_room is deferred past the room_id migration.
 
 // "Holding" containers (not yet placed in a location) need location_id to accept
 // NULL. SQLite has no ALTER COLUMN, so an existing database — created before this
@@ -119,3 +163,43 @@ if (containerLocationCol?.notnull) {
     CREATE INDEX IF NOT EXISTS idx_containers_location ON containers(location_id);
   `);
 }
+
+// Items gained a room_id (and a widened CHECK to allow it) for placing an item
+// directly in a room instead of a container/location — same rebuild-in-place
+// approach as containers above, since SQLite can't add to a CHECK constraint
+// or add a column referencing a brand-new table's rows in one step.
+const itemsCols = (db.prepare('PRAGMA table_info(items)').all() as { name: string }[]).map((c) => c.name);
+if (!itemsCols.includes('room_id')) {
+  db.exec(`
+    CREATE TABLE items_new (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT,
+      container_id TEXT REFERENCES containers(id) ON DELETE CASCADE,
+      location_id TEXT REFERENCES locations(id) ON DELETE CASCADE,
+      room_id TEXT REFERENCES rooms(id) ON DELETE CASCADE,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      CHECK ((container_id IS NOT NULL) + (location_id IS NOT NULL) + (room_id IS NOT NULL) = 1)
+    );
+    INSERT INTO items_new (id, name, description, container_id, location_id, room_id, created_at, updated_at)
+      SELECT id, name, description, container_id, location_id, NULL, created_at, updated_at FROM items;
+    DROP TABLE items;
+    ALTER TABLE items_new RENAME TO items;
+    CREATE INDEX IF NOT EXISTS idx_items_container ON items(container_id);
+    CREATE INDEX IF NOT EXISTS idx_items_location ON items(location_id);
+  `);
+}
+// Only safe to create once room_id definitely exists — either just above via
+// migration, or from a fresh install's CREATE TABLE at the top of this file.
+db.exec('CREATE INDEX IF NOT EXISTS idx_items_room ON items(room_id)');
+
+// product_id is a plain nullable FK unrelated to the placement CHECK, so
+// (unlike room_id above) a simple ADD COLUMN is enough — no table rebuild.
+const itemsColsAfterRoomMigration = (db.prepare('PRAGMA table_info(items)').all() as { name: string }[]).map(
+  (c) => c.name
+);
+if (!itemsColsAfterRoomMigration.includes('product_id')) {
+  db.exec('ALTER TABLE items ADD COLUMN product_id TEXT REFERENCES products(id) ON DELETE SET NULL');
+}
+db.exec('CREATE INDEX IF NOT EXISTS idx_items_product ON items(product_id)');

@@ -1,5 +1,5 @@
 name: StorBox
-version: "1.6.2"
+version: "1.8.0"
 slug: storbox
 description: Track where your stuff is — locations, containers, items, tags, and photos
 url: https://github.com/Wilco20004/StorBox
@@ -12,6 +12,7 @@ startup: application
 boot: auto
 ingress: true
 ingress_port: 8090
+homeassistant_api: true
 panel_icon: mdi:archive-outline
 panel_title: StorBox
 webui: "http://[HOST]:[PORT:8090]/"

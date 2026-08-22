@@ -10,6 +10,8 @@ import { itemsRouter } from './routes/items';
 import { tagsRouter } from './routes/tags';
 import { lookupRouter } from './routes/lookup';
 import { labelforgeRouter } from './routes/labelforge';
+import { roomsRouter } from './routes/rooms';
+import { itemLoansRouter, loansRouter } from './routes/loans';
 import {
   containerPhotoDeleteRouter,
   containerPhotosRouter,
@@ -30,11 +32,14 @@ app.use('/api/containers/:containerId/photos', containerPhotosRouter);
 app.use('/api/container-photos', containerPhotoDeleteRouter);
 app.use('/api/items/:itemId/photos', itemPhotosRouter);
 app.use('/api/item-photos', itemPhotoDeleteRouter);
+app.use('/api/items/:itemId/loans', itemLoansRouter);
+app.use('/api/loans', loansRouter);
 app.use('/api/locations/:locationId/photos', locationPhotosRouter);
 app.use('/api/location-photos', locationPhotoDeleteRouter);
 app.use('/api/locations', locationsRouter);
 app.use('/api/containers', containersRouter);
 app.use('/api/items', itemsRouter);
+app.use('/api/rooms', roomsRouter);
 app.use('/api/tags', tagsRouter);
 app.use('/api/lookup', lookupRouter);
 app.use('/api/labelforge', labelforgeRouter);

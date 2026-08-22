@@ -10,6 +10,9 @@ import TagPage from './pages/TagPage';
 import ContainerLabel from './pages/ContainerLabel';
 import ItemLabel from './pages/ItemLabel';
 import Scan from './pages/Scan';
+import RoomsList from './pages/RoomsList';
+import RoomDetail from './pages/RoomDetail';
+import RoomForm from './pages/RoomForm';
 import GlobalSearch from './components/GlobalSearch';
 
 export default function App() {
@@ -25,6 +28,7 @@ export default function App() {
             Locations
           </NavLink>
           <NavLink to="/scan">Scan</NavLink>
+          <NavLink to="/rooms">Rooms</NavLink>
           <NavLink to="/locations/new">Add location</NavLink>
           <NavLink to="/containers/new">Add container</NavLink>
         </nav>
@@ -46,6 +50,10 @@ export default function App() {
           <Route path="/items/:id/edit" element={<ItemForm />} />
           <Route path="/items/:id/label" element={<ItemLabel />} />
           <Route path="/tags/:name" element={<TagPage />} />
+          <Route path="/rooms" element={<RoomsList />} />
+          <Route path="/rooms/new" element={<RoomForm />} />
+          <Route path="/rooms/:id" element={<RoomDetail />} />
+          <Route path="/rooms/:id/edit" element={<RoomForm />} />
         </Routes>
       </main>
     </div>

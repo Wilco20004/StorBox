@@ -4,9 +4,13 @@ import {
   ItemDetail,
   ItemSummary,
   LabelTemplate,
+  Loan,
+  LoanWithItem,
   LocationDetail,
   LocationSummary,
   Photo,
+  RoomDetail,
+  RoomSummary,
   TagWithCounts,
 } from '../types';
 
@@ -41,7 +45,19 @@ export interface ItemInput {
   description?: string | null;
   container_id?: string | null;
   location_id?: string | null;
+  room_id?: string | null;
   tags: string[];
+}
+
+export interface RoomInput {
+  name: string;
+}
+
+export interface LoanInput {
+  borrower: string;
+  lent_at?: string;
+  due_at?: string | null;
+  notes?: string | null;
 }
 
 export const api = {
@@ -92,11 +108,29 @@ export const api = {
     return request<Photo>(`api/items/${id}/photos`, { method: 'POST', body: form });
   },
   deleteItemPhoto: (id: string) => request<void>(`api/item-photos/${id}`, { method: 'DELETE' }),
+  linkItems: (id: string, otherId: string) => request<ItemDetail>(`api/items/${id}/link/${otherId}`, { method: 'POST' }),
+  unlinkItem: (id: string) => request<ItemDetail>(`api/items/${id}/unlink`, { method: 'POST' }),
 
   listTags: () => request<TagWithCounts[]>('api/tags'),
 
   lookupCode: (code: string) =>
     request<{ type: 'item' | 'container'; id: string }>(`api/lookup/${encodeURIComponent(code)}`),
+
+  listRooms: () => request<RoomSummary[]>('api/rooms'),
+  getRoom: (id: string) => request<RoomDetail>(`api/rooms/${id}`),
+  createRoom: (data: RoomInput) => request<RoomDetail>('api/rooms', { method: 'POST', body: JSON.stringify(data) }),
+  updateRoom: (id: string, data: RoomInput) =>
+    request<RoomDetail>(`api/rooms/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteRoom: (id: string) => request<void>(`api/rooms/${id}`, { method: 'DELETE' }),
+  getHomeAssistantStatus: () => request<{ available: boolean }>('api/rooms/ha-status'),
+  syncRoomsFromHomeAssistant: () =>
+    request<{ ok: true; created: number; updated: number; total: number }>('api/rooms/sync-ha', { method: 'POST' }),
+
+  listActiveLoans: () => request<LoanWithItem[]>('api/loans?active=1'),
+  lendItem: (itemId: string, data: LoanInput) =>
+    request<Loan>(`api/items/${itemId}/loans`, { method: 'POST', body: JSON.stringify(data) }),
+  returnLoan: (loanId: string) => request<Loan>(`api/loans/${loanId}/return`, { method: 'PUT', body: JSON.stringify({}) }),
+  deleteLoan: (loanId: string) => request<void>(`api/loans/${loanId}`, { method: 'DELETE' }),
 
   listLabelTemplates: () => request<LabelTemplate[]>('api/labelforge/templates'),
   renderLabel: async (template_id: string, variables: Record<string, string>) => {

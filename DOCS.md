@@ -1,11 +1,13 @@
 # StorBox
 
-Track where your stuff actually is: Locations (rooms, garage, attic) contain
-Containers (boxes, shelves, bins) with a position (e.g. "Shelf 1 pos 2" or
-"Ground back"), and Items live either inside a container or directly in a
-location. Locations, containers, and items can all have photos, and items and
-containers can both be tagged. No accounts, no login, no monetary values —
-just "where did I put that."
+Track where your stuff actually is: Locations (garage, attic, storage
+closet) contain Containers (boxes, shelves, bins) with a position (e.g.
+"Shelf 1 pos 2" or "Ground back"), and Items live inside a container,
+directly in a location, or — once they're out of storage and in active use
+— in a **Room** (see below; not the same thing as a Location). Locations,
+containers, and items can all have photos, and items and containers can
+both be tagged. No accounts, no login, no monetary values — just "where did
+I put that."
 
 ## Setup
 
@@ -39,6 +41,63 @@ That same **Location** section works on any container, not just holding
 ones — pick a different location and hit **Move** to relocate it, or
 **Move to Holding** to pull it back out of a location. Nothing about the
 container's items, tags, or photos changes when it moves.
+
+## Rooms — items out of storage and in active use
+
+A **Room** is where an item goes once it's not really "in storage"
+anymore — e.g. a multiplug moved from a storage bin to the living room.
+Rooms are a separate concept from Locations: a Location is a place you
+store boxes (garage, attic); a Room is a place you use things. Open
+**Rooms** in the top nav to create one, or see below to pull them in from
+Home Assistant automatically.
+
+Any item's page has a **Placement** section: pick "Move to a room" (or
+container, or location) and hit **Move** to relocate it — this works
+regardless of where the item currently is, so moving something from a
+storage container straight into a room, or back again, is one action.
+
+### Pulling rooms in from Home Assistant
+
+If StorBox has access to Home Assistant's API (it does automatically when
+installed as a Home Assistant add-on — no setup needed), the Rooms page
+shows a **Sync from Home Assistant** button that creates a Room for each
+of your HA Areas (and renames existing ones if you rename the Area in HA).
+If that access isn't available for some reason (e.g. running StorBox
+outside of Home Assistant's Supervisor), the button won't appear and the
+page says so — just add rooms manually with **Add room** instead; nothing
+else about the feature depends on the sync working.
+
+## Lending items
+
+Any item's page has a **Lending** section. Fill in who you're lending it
+to and a date (a due-back date is optional) and hit **Lend this item** —
+the item's page and header both show it's out, and the dashboard's **Lent
+out** section lists every item currently lent across your whole inventory
+with a one-click **Mark as returned**. An item can only be lent to one
+person at a time; past loans stay visible as history on the item's page.
+Lending doesn't change where an item is placed (container/location/room) —
+it's a separate status layered on top, since the hammer still "lives" in
+the toolbox even while it's out with a neighbor.
+
+## Linking identical items ("same product")
+
+If you own several of the same thing kept in different places — say, seven
+"2 point plug single" adapters spread across containers and rooms — link
+them together so you can always find all of them from any one of them.
+
+Start typing a name in the **Name** field on Add/Edit item; if anything
+already in your inventory matches, it shows up right under the field as
+you type (not a dropdown — pick it or keep typing your own text). Picking
+a suggestion links the item you're adding to it. The linked item's page
+then has a **Same product** section listing every other item linked to it
+and exactly where each one currently is.
+
+Items that already existed before you started linking things work the
+same way after the fact — open one, and if it isn't linked to anything yet
+its **Same product** section has its own search box; find and pick the
+matching item there to link them. Linking two items that were each already
+part of a different group merges both groups into one. **Unlink** on any
+item's page removes just that one from its group, leaving the rest linked.
 
 ## Printing on a Brother QL label printer (via LabelForge)
 

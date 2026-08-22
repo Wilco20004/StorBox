@@ -1,5 +1,45 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.8.0
+
+- Added item linking: when you have several of the same thing scattered
+  across containers/locations/rooms (e.g. "2 point plug single" x7), the
+  Name field on Add/Edit item is now a live autocomplete (not a dropdown)
+  — matching existing items show up as you type, and picking one links
+  the new item to it as the same "product". Every linked item's page gets
+  a **Same product** section listing the others and where they currently
+  are. Items that already existed before this feature can be linked
+  retroactively the same way, via a search box in that same section.
+  Linking two items that each already had their own group of linked items
+  merges the groups; **Unlink** on any item's page undoes just that one.
+  `items.product_id` is a plain nullable column (unlike room_id/location_id,
+  it isn't part of the placement rule), so existing databases pick it up
+  via a simple column addition — no table rebuild needed this time.
+
+## 1.7.0
+
+- Added **Rooms** — a place for items that are out of storage and in
+  active use (e.g. a multiplug moved from a storage bin to the living
+  room), distinct from Locations. Any item's page has a **Placement**
+  section to move it between a container, a location, or a room in one
+  action. Rooms can sync automatically from Home Assistant's Areas (the
+  add-on now requests `homeassistant_api` access for this) or be added
+  manually — the Rooms page detects which is available and only shows the
+  sync button when it'll actually work.
+- Added **Lending**: mark any item as lent to someone on a date, with an
+  optional due-back date, and mark it returned later. The dashboard's new
+  **Lent out** section lists everything currently out, across the whole
+  inventory, with a one-click return. Loan history stays on the item's
+  page. This is independent of where the item is placed — lending is a
+  status layered on top, not a move.
+- `items.room_id` required a widened placement rule (exactly one of
+  container/location/room, not just container/location) — existing
+  databases migrate automatically on first start (another one-time
+  internal table rebuild, same reason and same care as containers'
+  location_id in 1.6.0). Verified against a seeded old-schema database
+  with real items in both a container and a location that existing data
+  survives and the new room/lending flows work immediately after.
+
 ## 1.6.2
 
 - Replaced 1.6.1's **Take photo** (a plain file input's `capture`
