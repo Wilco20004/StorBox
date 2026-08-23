@@ -124,7 +124,8 @@ export default function ItemForm() {
         </label>
         {linkToItemId && (
           <p className="muted small">
-            Will link to the existing "{form.name}" — they'll show up together as the same product.
+            Will link to the existing "{form.name}" — they'll show up together as linked items, wherever each
+            one actually is.
           </p>
         )}
         <label>

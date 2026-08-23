@@ -248,11 +248,12 @@ export default function ItemDetail() {
       </section>
 
       <section className="card">
-        <h2>Same product</h2>
+        <h2>Linked items</h2>
         {item.product ? (
           <>
             <p className="muted small">
-              Linked as the same product as {item.siblings.length} other item{item.siblings.length === 1 ? '' : 's'}.
+              Linked with {item.siblings.length} other item{item.siblings.length === 1 ? '' : 's'} — duplicates of
+              this, or parts of the same set, wherever they're actually kept.
             </p>
             {item.siblings.length > 0 && (
               <ul className="entity-list">
@@ -277,15 +278,16 @@ export default function ItemDetail() {
         ) : (
           <>
             <p className="muted small">
-              Not linked to any other item yet. If you have more than one of these (e.g. "2 point plug single"),
-              search for it below to link them together.
+              Not linked to anything yet. Link it to another item if it's a duplicate (e.g. "2 point plug single"
+              x7) or if they're really one thing kept in separate places (e.g. a gazebo and its poles, one in a
+              container and one loose in a location) — search for it below.
             </p>
             <ItemAutocomplete
               value={linkQuery}
               onChange={setLinkQuery}
               onSelect={(other) => handleLink(other.id)}
               excludeId={item.id}
-              placeholder="Search for a matching item..."
+              placeholder="Search for an item to link..."
             />
           </>
         )}

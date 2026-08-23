@@ -1,5 +1,15 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.8.1
+
+- Relabeled 1.8.0's linking feature from "Same product" to **Linked
+  items**: the mechanism was always a plain symmetric link (no naming or
+  placement requirement), but the wording implied it only worked for
+  duplicates. Confirmed it already handles two differently-named items in
+  different kinds of storage (e.g. a gazebo in a container, linked to its
+  poles kept loose in a location) — no code change beyond copy, verified
+  live with exactly that scenario in both directions.
+
 ## 1.8.0
 
 - Added item linking: when you have several of the same thing scattered

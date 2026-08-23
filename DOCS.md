@@ -79,25 +79,34 @@ Lending doesn't change where an item is placed (container/location/room) —
 it's a separate status layered on top, since the hammer still "lives" in
 the toolbox even while it's out with a neighbor.
 
-## Linking identical items ("same product")
+## Linking items together
 
-If you own several of the same thing kept in different places — say, seven
-"2 point plug single" adapters spread across containers and rooms — link
-them together so you can always find all of them from any one of them.
+Link items that belong together even if they're stored separately and
+named differently — this covers two related cases:
+
+- **Duplicates**: you own several of the same thing kept in different
+  places (seven "2 point plug single" adapters spread across containers
+  and rooms) and want to find all of them from any one of them.
+- **One thing in parts**: a gazebo whose frame lives in a container but
+  whose poles are loose directly in a location — different names,
+  different kinds of storage, but really one thing.
 
 Start typing a name in the **Name** field on Add/Edit item; if anything
 already in your inventory matches, it shows up right under the field as
 you type (not a dropdown — pick it or keep typing your own text). Picking
-a suggestion links the item you're adding to it. The linked item's page
-then has a **Same product** section listing every other item linked to it
-and exactly where each one currently is.
+a suggestion links the item you're adding to it. Any linked item's page
+has a **Linked items** section listing every item linked to it and exactly
+where each one currently is, regardless of what it's called or how it's
+placed.
 
 Items that already existed before you started linking things work the
 same way after the fact — open one, and if it isn't linked to anything yet
-its **Same product** section has its own search box; find and pick the
-matching item there to link them. Linking two items that were each already
-part of a different group merges both groups into one. **Unlink** on any
-item's page removes just that one from its group, leaving the rest linked.
+its **Linked items** section has its own search box; find and pick the
+matching item there (its name doesn't need to be similar — search for
+"poles" from the gazebo's page and it'll turn up) to link them. Linking two
+items that were each already part of a different group merges both groups
+into one. **Unlink** on any item's page removes just that one from its
+group, leaving the rest linked.
 
 ## Printing on a Brother QL label printer (via LabelForge)
 
