@@ -1,5 +1,16 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.8.2
+
+- Fixed the **Copies** field on the LabelForge print panel snapping back to
+  `1` on every keystroke while clearing it to type a different number, so
+  you'd end up typing "3" into "1" and getting "13", then having to delete
+  the leftover "1" by hand. The field now lets you freely clear and retype;
+  it only clamps back to a valid number (minimum 1) when you click away.
+  Verified the fix directly against the live DOM: clearing now actually
+  empties the field instead of resetting, and typing straight after gives
+  the number you typed, not it appended to the old one.
+
 ## 1.8.1
 
 - Relabeled 1.8.0's linking feature from "Same product" to **Linked

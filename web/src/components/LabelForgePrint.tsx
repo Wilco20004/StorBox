@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import { api } from '../api/client';
 import { LabelTemplate } from '../types';
+import NumberInput from './NumberInput';
 
 export default function LabelForgePrint({ seed }: { seed: Record<string, string> }) {
   const [templates, setTemplates] = useState<LabelTemplate[] | null>(null);
@@ -143,12 +144,7 @@ export default function LabelForgePrint({ seed }: { seed: Record<string, string>
               )}
               <label>
                 Copies
-                <input
-                  type="number"
-                  min={1}
-                  value={copies}
-                  onChange={(e) => setCopies(Math.max(1, Number(e.target.value) || 1))}
-                />
+                <NumberInput value={copies} onCommit={setCopies} min={1} />
               </label>
 
               {previewUrl && (
