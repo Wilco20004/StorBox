@@ -516,6 +516,212 @@ body {
   }
 }
 
+/* --- Grid containers (Gridfinity-style layouts) --- */
+
+.form-fieldset {
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+  padding: 0.75rem 1rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.form-fieldset legend {
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+
+.field-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.field-row label {
+  flex: 1;
+}
+
+.checkbox-label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400 !important;
+}
+
+.checkbox-label input {
+  width: auto !important;
+  margin: 0;
+}
+
+.grid-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.grid-hint {
+  margin: 0 0 0.5rem;
+}
+
+.grid-board {
+  display: grid;
+  gap: 4px;
+  /* Keeps cells legible on a phone; the board scrolls sideways rather than
+     squashing a wide grid into unreadable slivers. */
+  min-width: min-content;
+  margin-bottom: 0.75rem;
+}
+
+.grid-board-scroll {
+  overflow-x: auto;
+}
+
+.grid-axis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  min-width: 1.4rem;
+  min-height: 1.4rem;
+}
+
+.grid-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.1rem;
+  min-width: 4.5rem;
+  min-height: 4.5rem;
+  padding: 0.35rem;
+  border-radius: 6px;
+  border: 1px solid var(--gray-300);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.grid-cell-free {
+  position: relative;
+  background: repeating-linear-gradient(45deg, #fff, #fff 6px, var(--gray-100) 6px, var(--gray-100) 12px);
+  border-style: dashed;
+  color: var(--gray-600);
+}
+
+.grid-cell-free:disabled {
+  cursor: default;
+}
+
+.grid-cell-free.targetable {
+  border-color: var(--blue-500);
+  background: var(--blue-100);
+}
+
+.grid-cell-add {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--gray-300);
+}
+
+.grid-cell-free:hover .grid-cell-add {
+  color: var(--blue-500);
+}
+
+.grid-cell-bin {
+  background: var(--blue-100);
+  border-color: var(--blue-500);
+  overflow: hidden;
+}
+
+.grid-cell-bin:hover {
+  background: #d9e9f5;
+}
+
+.grid-cell-bin.selected {
+  outline: 3px solid var(--amber-500);
+  outline-offset: -1px;
+}
+
+.grid-cell-bin.highlight {
+  outline: 3px solid var(--amber-500);
+  outline-offset: -1px;
+  animation: grid-pulse 1.2s ease-in-out 3;
+}
+
+@keyframes grid-pulse {
+  50% {
+    background: #f6e3cb;
+  }
+}
+
+.grid-cell-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--gray-600);
+}
+
+.grid-bin-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink-900);
+  overflow-wrap: anywhere;
+}
+
+.grid-bin-count {
+  font-size: 0.7rem;
+  color: var(--gray-600);
+}
+
+.grid-selected-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0.6rem;
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
+  background: var(--gray-100);
+}
+
+.grid-unplaced-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.grid-chip {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  border: 1px dashed var(--gray-300);
+  background: #fff;
+  font: inherit;
+  font-size: 0.8rem;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.grid-chip.selected {
+  border-style: solid;
+  border-color: var(--amber-500);
+  background: #f9efdf;
+}
+
 @media (max-width: 640px) {
   .content {
     padding: 1rem;

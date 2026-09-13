@@ -170,7 +170,7 @@ export default function ItemForm() {
               </option>
               {containers.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.location_name || 'Holding'} / {c.name}
+                  {c.path}
                   {c.position ? ` (${c.position})` : ''}
                 </option>
               ))}

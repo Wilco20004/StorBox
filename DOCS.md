@@ -28,19 +28,62 @@ I put that."
    scanner; it's not a link, so it keeps working however you access StorBox
    (Ingress or direct).
 
-## Holding containers and moving between locations
+## Holding containers and moving things around
 
 A container doesn't need a location right away. Use **Add container** in
 the top nav (or "Add a holding container" on the dashboard) to create one
 without picking a location — it shows up under **Holding** on the
 dashboard instead of under a location. Pack it, tag it, add items to it
 like any other container, and once it's full, open it and use the
-**Location** section to move it to wherever it'll actually live.
+**Where it lives** section to move it to wherever it'll actually live.
 
-That same **Location** section works on any container, not just holding
-ones — pick a different location and hit **Move** to relocate it, or
-**Move to Holding** to pull it back out of a location. Nothing about the
-container's items, tags, or photos changes when it moves.
+That same **Where it lives** section works on any container, not just
+holding ones — pick a different location (or another container, see below)
+and hit **Move** to relocate it, or **Move to Holding** to pull it back
+out. Nothing about the container's items, tags, or photos changes when it
+moves.
+
+## Containers inside containers, and grid layouts
+
+A container can sit inside another container, as deep as you like: a
+shelf in the garage, a Gridfinity tray on the shelf, bins in the tray,
+items in the bins. Pick the parent from the **Sits in** field when adding
+or editing a container, or from **Where it lives** on its page. A
+container only ever has one home — moving it into another container takes
+it out of its location, and vice versa. Its real location is whatever the
+outermost container in the chain sits in, and that's what breadcrumbs and
+item pages show.
+
+### Grid layouts
+
+Tick **Lay containers out on a grid** on a container and give it a column
+and row count (4 x 3 for a 4-wide, 3-deep Gridfinity baseplate) and its
+page gains an interactive **Layout**. Anything nested inside it is drawn
+in its own cell at its real footprint, with the number of items in it.
+
+- **Cells are named across then down** — letters for columns, numbers for
+  rows, so the third column of the fourth row is `C4`. Same convention as
+  a spreadsheet.
+- **Bin size** is set in cells on the container form — a 1x1 Gridfinity
+  bin, a 2x2, a 4x1 tray, whatever it physically occupies.
+- **Tap an empty cell** to add a bin straight into it.
+- **Tap Rearrange**, then tap a bin to pick it up and tap a free cell to
+  drop it there. While a bin is held you can also make it wider, narrower,
+  taller or shorter a cell at a time, or take it off the grid.
+- **Bins with no cell yet** wait in a strip under the layout — useful when
+  you've labelled a batch of bins before deciding where they go. Tap one
+  in Rearrange mode, then tap a cell.
+
+Bins that would overlap, or hang off the edge, are refused with a message
+naming the bin in the way, and a grid can't be shrunk out from under the
+bins already placed on it — move or unplace them first.
+
+### Finding something in a bin
+
+An item's page shows the full path to it, deepest first — e.g.
+`C2 Fasteners · Gridfinity tray · Workbench shelf · Garage` — so you know
+which cell of which tray to open. Next to it, **Show on layout** opens the
+tray's page and pulses the exact cell the item is in.
 
 ## Rooms — items out of storage and in active use
 
@@ -125,10 +168,15 @@ get a fully auto-filled label:
 | Variable    | Meaning                                              | Container labels | Item labels |
 | ----------- | ----------------------------------------------------- | ----------------- | ----------- |
 | `name`      | The container's or item's own name                    | ✓ | ✓ |
-| `location`  | The top-level Location's name                         | ✓ | ✓ |
-| `container` | The parent container's name                           | — | only if inside a container |
-| `position`  | The parent container's position (e.g. "Shelf 1 pos 2") | ✓ (its own position) | only if inside a container with one set |
+| `location`  | The Location at the top of its chain                  | ✓ | ✓ |
+| `container` | The parent container's name                           | only if nested inside one | only if inside a container |
+| `position`  | Where it sits — free-text position, or the grid cell   | ✓ (its own position, else its cell) | its container's cell, else that container's position |
 | `code`      | The bare id also used for StorBox's own QR label       | ✓ | ✓ |
+
+With nested containers, `location` is the Location at the top of the chain
+rather than one the container holds directly — a bin inside a tray inside a
+shelf in the Garage prints "Garage", not a blank. A bin on a grid gets its
+cell (e.g. `C2`) as its `position`, and the tray it's on as `container`.
 
 For a label that's scannable by StorBox's own **Scan** page, give the
 template's image an **override variable** (LabelForge 1.2.0+, any name you

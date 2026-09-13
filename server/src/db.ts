@@ -34,12 +34,29 @@ db.exec(`
     updated_at TEXT NOT NULL
   );
 
+  -- A container sits in exactly one of: a location, another container
+  -- (parent_id — a shelf holding a Gridfinity tray holding bins), or nowhere at
+  -- all, which is the "Holding" pile on the dashboard.
+  --
+  -- grid_cols/grid_rows set means this container IS a grid (e.g. a 4x3
+  -- Gridfinity baseplate): its children are laid out on it, and cells are
+  -- labelled column-letter + row-number, so x=2,y=3 reads "C4".
+  -- grid_x/grid_y is this container's own cell within its PARENT's grid
+  -- (NULL = added to the grid but not placed on it yet); grid_w/grid_h is its
+  -- footprint in grid units (1x1, 2x2, ...).
   CREATE TABLE IF NOT EXISTS containers (
     id TEXT PRIMARY KEY,
     location_id TEXT REFERENCES locations(id) ON DELETE CASCADE,
+    parent_id TEXT REFERENCES containers(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     position TEXT,
     description TEXT,
+    grid_cols INTEGER,
+    grid_rows INTEGER,
+    grid_x INTEGER,
+    grid_y INTEGER,
+    grid_w INTEGER,
+    grid_h INTEGER,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
@@ -203,3 +220,26 @@ if (!itemsColsAfterRoomMigration.includes('product_id')) {
   db.exec('ALTER TABLE items ADD COLUMN product_id TEXT REFERENCES products(id) ON DELETE SET NULL');
 }
 db.exec('CREATE INDEX IF NOT EXISTS idx_items_product ON items(product_id)');
+
+// Container nesting + Gridfinity layout. Unlike items' room_id, none of these
+// take part in a CHECK constraint and containers has none, so plain ADD COLUMNs
+// are enough — no table rebuild. (A REFERENCES clause is legal in ADD COLUMN as
+// long as the new column defaults to NULL, which these all do.)
+const containerCols = (db.prepare('PRAGMA table_info(containers)').all() as { name: string }[]).map((c) => c.name);
+const containerAdditions: [string, string][] = [
+  ['parent_id', 'TEXT REFERENCES containers(id) ON DELETE CASCADE'],
+  ['grid_cols', 'INTEGER'],
+  ['grid_rows', 'INTEGER'],
+  ['grid_x', 'INTEGER'],
+  ['grid_y', 'INTEGER'],
+  ['grid_w', 'INTEGER'],
+  ['grid_h', 'INTEGER'],
+];
+for (const [column, declaration] of containerAdditions) {
+  if (!containerCols.includes(column)) {
+    db.exec(`ALTER TABLE containers ADD COLUMN ${column} ${declaration}`);
+  }
+}
+// Deferred past the migration above for the same reason as idx_items_room: on an
+// existing database parent_id only exists once that ADD COLUMN has run.
+db.exec('CREATE INDEX IF NOT EXISTS idx_containers_parent ON containers(parent_id)');

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../api/client';
+import { itemPath } from '../utils/itemPath';
 import { ContainerDetail, ItemDetail } from '../types';
 
 export default function TagPage() {
@@ -42,7 +43,7 @@ export default function TagPage() {
                   </Link>
                   {(item.container || item.location) && (
                     <p className="muted small">
-                      📍 {item.container ? item.container.name : item.location?.name}
+                      📍 {itemPath(item) || item.location?.name}
                     </p>
                   )}
                 </div>

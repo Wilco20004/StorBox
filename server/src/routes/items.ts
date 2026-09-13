@@ -1,22 +1,38 @@
 import { Router } from 'express';
 import { v4 as uuid } from 'uuid';
 import { db } from '../db';
-import { Container, Item, Loan, Location, Product, Room } from '../types';
+import { Item, Loan, Location, Product, Room } from '../types';
 import { getTagsForItem, setItemTags } from '../services/tags';
+import { cellLabel, getAncestors, getContainer, getRootLocation } from '../services/containers';
 
 export const itemsRouter = Router();
 
 function resolvePlaces(item: Item) {
-  const container = item.container_id
-    ? (db.prepare('SELECT * FROM containers WHERE id = ?').get(item.container_id) as Container | undefined)
+  const container = item.container_id ? getContainer(item.container_id) ?? null : null;
+  // A nested bin has no location of its own, so the item's location is whatever
+  // the outermost container in its chain sits in.
+  const location = item.location_id
+    ? ((db.prepare('SELECT * FROM locations WHERE id = ?').get(item.location_id) as Location | undefined) ?? null)
+    : container
+    ? getRootLocation(container)
     : null;
-  const location = db
-    .prepare('SELECT * FROM locations WHERE id = ?')
-    .get(item.location_id || container?.location_id) as Location | undefined;
   const room = item.room_id
     ? (db.prepare('SELECT * FROM rooms WHERE id = ?').get(item.room_id) as Room | undefined)
     : null;
-  return { container: container || null, location: location || null, room: room || null };
+  return {
+    container: container
+      ? {
+          ...container,
+          cell:
+            container.grid_x !== null && container.grid_y !== null
+              ? cellLabel(container.grid_x, container.grid_y)
+              : null,
+          ancestors: getAncestors(container).map((a) => ({ id: a.id, name: a.name })),
+        }
+      : null,
+    location,
+    room: room || null,
+  };
 }
 
 // Lightweight sibling summary (same product) — placement only, no tags/photos/loans.

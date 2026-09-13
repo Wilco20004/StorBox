@@ -9,9 +9,19 @@ export interface Location {
 export interface Container {
   id: string;
   location_id: string | null;
+  parent_id: string | null;
   name: string;
   position: string | null;
   description: string | null;
+  /** Set on both axes when this container is itself a grid (a Gridfinity baseplate). */
+  grid_cols: number | null;
+  grid_rows: number | null;
+  /** This container's own cell in its parent's grid; null when it hasn't been placed yet. */
+  grid_x: number | null;
+  grid_y: number | null;
+  /** Footprint in grid units — a 2x2 bin is grid_w 2, grid_h 2. */
+  grid_w: number | null;
+  grid_h: number | null;
   created_at: string;
   updated_at: string;
 }

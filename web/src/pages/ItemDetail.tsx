@@ -154,10 +154,18 @@ export default function ItemDetail() {
             <Link to={`/locations/${item.location.id}`}>{item.location.name}</Link>
           </>
         )}
+        {item.container?.ancestors.map((a) => (
+          <span key={a.id}>
+            {' / '}
+            <Link to={`/containers/${a.id}`}>{a.name}</Link>
+          </span>
+        ))}
         {item.container && (
           <>
             {' / '}
-            <Link to={`/containers/${item.container.id}`}>{item.container.name}</Link>
+            <Link to={`/containers/${item.container.id}`}>
+              {item.container.cell ? `${item.container.cell} · ${item.container.name}` : item.container.name}
+            </Link>
           </>
         )}
         {item.room && (
@@ -170,6 +178,19 @@ export default function ItemDetail() {
       <div className="detail-header">
         <div>
           <h1>{item.name}</h1>
+          {item.container && (
+            <p>
+              📦 {itemPath(item)}
+              {item.container.cell && item.container.parent_id && (
+                <>
+                  {' · '}
+                  <Link to={`/containers/${item.container.parent_id}?highlight=${item.container.id}`}>
+                    Show on layout
+                  </Link>
+                </>
+              )}
+            </p>
+          )}
           {item.description && <p className="notes">{item.description}</p>}
           {item.active_loan && (
             <p className="muted">
@@ -237,7 +258,7 @@ export default function ItemDetail() {
             <option value="">Choose...</option>
             {moveOptions.map((o: any) => (
               <option key={o.id} value={o.id}>
-                {moveType === 'container' ? `${o.location_name || 'Holding'} / ${o.name}` : o.name}
+                {moveType === 'container' ? (o as ContainerOption).path : o.name}
               </option>
             ))}
           </select>

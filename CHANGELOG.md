@@ -1,5 +1,40 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.9.0
+
+- Containers can now go **inside other containers**, to any depth — a shelf
+  in the garage, a tray on the shelf, bins in the tray. Every container's
+  page has a **Where it lives** section that can move it into a location,
+  into another container, or back to Holding, and breadcrumbs everywhere
+  now show the whole chain rather than just the location.
+- Any container can be given a **grid layout** (columns x rows, e.g. 4x3) —
+  built for Gridfinity baseplates, but equally a pigeonhole shelf or a
+  drawer organiser. Containers nested in a grid are drawn on an interactive
+  layout on its page: each bin sits in its cell at its real footprint
+  (1x1, 2x2, ...), showing how many items are in it. Cells are named
+  spreadsheet-style, letters across and numbers down, so the third column
+  of the fourth row is `C4`.
+- Tap **Rearrange** on a layout to pick a bin up and drop it in a free cell,
+  resize it a cell at a time, or take it off the grid entirely; tapping an
+  empty cell in normal mode adds a bin straight into it. Bins added without
+  a cell wait in a strip under the layout until you place them. Overlapping
+  bins, bins hanging off the edge, and shrinking a grid out from under the
+  bins already on it are all refused with a message naming the bin in the
+  way.
+- An item in a bin now knows where it really is: its page shows the full
+  path (`C2 Fasteners · Gridfinity tray · Workbench shelf · Garage`), with a
+  **Show on layout** link that opens the tray and pulses the exact cell.
+  Previously an item in a nested container showed no location at all,
+  because the bin it was in had none of its own.
+- Container listings now count what's inside the containers nested in them,
+  so a tray full of bins no longer reads "0 items".
+- The new columns are plain nullable additions to `containers` (no CHECK
+  constraint is involved, unlike `room_id`), so existing databases pick
+  them up without a table rebuild. Verified against a seeded pre-1.9.0
+  database with real rows: all seven columns and the parent index were
+  added, and every location, container, item, tag, loan and photo survived
+  unchanged.
+
 ## 1.8.2
 
 - Fixed the **Copies** field on the LabelForge print panel snapping back to

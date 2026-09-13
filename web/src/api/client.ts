@@ -36,8 +36,25 @@ export interface ContainerInput {
   name: string;
   position?: string | null;
   description?: string | null;
+  /** A container has a location or a parent, never both — the server clears the other. */
   location_id: string | null;
+  parent_id?: string | null;
+  /** Both together turn this container into a grid; both null turn it off. */
+  grid_cols?: number | null;
+  grid_rows?: number | null;
+  /** Cell and footprint on the parent's grid. */
+  grid_x?: number | null;
+  grid_y?: number | null;
+  grid_w?: number | null;
+  grid_h?: number | null;
   tags: string[];
+}
+
+export interface GridPositionInput {
+  grid_x: number | null;
+  grid_y: number | null;
+  grid_w?: number;
+  grid_h?: number;
 }
 
 export interface ItemInput {
@@ -84,6 +101,10 @@ export const api = {
     request<ContainerDetail>('api/containers', { method: 'POST', body: JSON.stringify(data) }),
   updateContainer: (id: string, data: ContainerInput) =>
     request<ContainerDetail>(`api/containers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  // Moves one bin around its parent's grid without round-tripping the whole
+  // container; resolves with the PARENT's detail, which is the view being edited.
+  setGridPosition: (id: string, data: GridPositionInput) =>
+    request<ContainerDetail>(`api/containers/${id}/grid-position`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteContainer: (id: string) => request<void>(`api/containers/${id}`, { method: 'DELETE' }),
   uploadContainerPhoto: (id: string, file: File) => {
     const form = new FormData();

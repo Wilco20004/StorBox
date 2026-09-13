@@ -17,7 +17,12 @@ export default function ItemLabel() {
   if (error) return <p className="error">{error}</p>;
   if (!item || !id) return <p>Loading...</p>;
 
-  const subtitle = item.container ? item.container.name : item.location?.name;
+  const containerText = item.container
+    ? item.container.cell
+      ? `${item.container.cell} · ${item.container.name}`
+      : item.container.name
+    : '';
+  const subtitle = containerText || item.location?.name;
 
   return (
     <>
@@ -27,7 +32,7 @@ export default function ItemLabel() {
           name: item.name,
           location: item.location?.name || '',
           container: item.container?.name || '',
-          position: item.container?.position || '',
+          position: item.container?.cell || item.container?.position || '',
           code: id,
         }}
       />

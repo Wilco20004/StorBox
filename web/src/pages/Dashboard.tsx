@@ -92,7 +92,9 @@ export default function Dashboard() {
               <div className="entity-card-body">
                 <h3>{c.name}</h3>
                 <p className="muted small">
-                  {c.items.length} item{c.items.length === 1 ? '' : 's'}
+                  {c.total_item_count} item{c.total_item_count === 1 ? '' : 's'}
+                  {c.child_count > 0 &&
+                    ` in ${c.child_count} container${c.child_count === 1 ? '' : 's'}`}
                 </p>
               </div>
             </Link>

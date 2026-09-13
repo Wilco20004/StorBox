@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { v4 as uuid } from 'uuid';
 import { db } from '../db';
-import { Location } from '../types';
-import { getTagsForContainer, getTagsForItem } from '../services/tags';
+import { Container, Location } from '../types';
+import { getTagsForItem } from '../services/tags';
+import { containerSummary } from '../services/containers';
 
 export const locationsRouter = Router();
 
@@ -28,15 +29,11 @@ locationsRouter.get('/:id', (req, res) => {
   const location = db.prepare('SELECT * FROM locations WHERE id = ?').get(req.params.id) as Location | undefined;
   if (!location) return res.status(404).json({ error: 'Location not found' });
 
+  // Only top-level containers — anything nested shows on its own parent's page.
   const containers = db
     .prepare('SELECT * FROM containers WHERE location_id = ? ORDER BY name')
-    .all(location.id) as any[];
-  const containersWithExtras = containers.map((c) => ({
-    ...c,
-    tags: getTagsForContainer(c.id),
-    item_count: (db.prepare('SELECT COUNT(*) AS n FROM items WHERE container_id = ?').get(c.id) as { n: number }).n,
-    photos: db.prepare('SELECT * FROM container_photos WHERE container_id = ? ORDER BY created_at').all(c.id),
-  }));
+    .all(location.id) as Container[];
+  const containersWithExtras = containers.map(containerSummary);
 
   const items = db
     .prepare('SELECT * FROM items WHERE location_id = ? ORDER BY name')

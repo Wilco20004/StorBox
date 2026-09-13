@@ -79,7 +79,9 @@ export default function LocationDetail() {
                 <h3>{c.name}</h3>
                 {c.position && <p className="muted small">{c.position}</p>}
                 <p className="muted small">
-                  {c.item_count} item{c.item_count === 1 ? '' : 's'}
+                  {c.total_item_count} item{c.total_item_count === 1 ? '' : 's'}
+                  {c.child_count > 0 &&
+                    ` in ${c.child_count} container${c.child_count === 1 ? '' : 's'}`}
                 </p>
                 {c.tags.length > 0 && (
                   <div className="tag-list">
