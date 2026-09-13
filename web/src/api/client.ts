@@ -90,6 +90,11 @@ export const api = {
     form.append('photo', file);
     return request<Photo>(`api/locations/${id}/photos`, { method: 'POST', body: form });
   },
+  replaceLocationPhoto: (id: string, file: File) => {
+    const form = new FormData();
+    form.append('photo', file);
+    return request<Photo>(`api/location-photos/${id}`, { method: 'PUT', body: form });
+  },
   deleteLocationPhoto: (id: string) => request<void>(`api/location-photos/${id}`, { method: 'DELETE' }),
 
   listContainers: () => request<ContainerOption[]>('api/containers'),
@@ -111,6 +116,11 @@ export const api = {
     form.append('photo', file);
     return request<Photo>(`api/containers/${id}/photos`, { method: 'POST', body: form });
   },
+  replaceContainerPhoto: (id: string, file: File) => {
+    const form = new FormData();
+    form.append('photo', file);
+    return request<Photo>(`api/container-photos/${id}`, { method: 'PUT', body: form });
+  },
   deleteContainerPhoto: (id: string) => request<void>(`api/container-photos/${id}`, { method: 'DELETE' }),
 
   listItems: (params?: { q?: string; tag?: string }) => {
@@ -127,6 +137,11 @@ export const api = {
     const form = new FormData();
     form.append('photo', file);
     return request<Photo>(`api/items/${id}/photos`, { method: 'POST', body: form });
+  },
+  replaceItemPhoto: (id: string, file: File) => {
+    const form = new FormData();
+    form.append('photo', file);
+    return request<Photo>(`api/item-photos/${id}`, { method: 'PUT', body: form });
   },
   deleteItemPhoto: (id: string) => request<void>(`api/item-photos/${id}`, { method: 'DELETE' }),
   linkItems: (id: string, otherId: string) => request<ItemDetail>(`api/items/${id}/link/${otherId}`, { method: 'POST' }),

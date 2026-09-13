@@ -111,9 +111,12 @@ export default function GridLayout({ container, onChanged, highlightId }: Props)
       <div className="grid-board-scroll">
         <div
           className="grid-board"
+          // Square cells of a fixed size rather than stretching to the
+          // available width: a 2x2 bin has to actually look twice as wide and
+          // twice as tall as a 1x1, or the layout misrepresents the tray.
           style={{
-            gridTemplateColumns: `auto repeat(${cols}, minmax(0, 1fr))`,
-            gridTemplateRows: `auto repeat(${rows}, minmax(0, 1fr))`,
+            gridTemplateColumns: `auto repeat(${cols}, var(--cell))`,
+            gridTemplateRows: `auto repeat(${rows}, var(--cell))`,
           }}
         >
         <div className="grid-corner" />
@@ -162,11 +165,17 @@ export default function GridLayout({ container, onChanged, highlightId }: Props)
         {placed.map((bin) => {
           const { x, y, w, h } = footprint(bin);
           const style = { gridColumn: `${x + 2} / span ${w}`, gridRow: `${y + 2} / span ${h}` };
-          const className = `grid-cell grid-cell-bin${bin.id === highlightId ? ' highlight' : ''}${
-            bin.id === selectedId ? ' selected' : ''
-          }`;
+          const className = `grid-cell grid-cell-bin${bin.cover_photo ? ' has-photo' : ''}${
+            bin.id === highlightId ? ' highlight' : ''
+          }${bin.id === selectedId ? ' selected' : ''}`;
           const body = (
             <>
+              {bin.cover_photo && (
+                <span className="grid-bin-photo">
+                  {/* Decorative: the bin's name and count are already in the cell. */}
+                  <img src={`uploads/${bin.cover_photo.file_path}`} alt="" />
+                </span>
+              )}
               <span className="grid-cell-label">
                 {cellLabel(x, y)}
                 {(w > 1 || h > 1) && ` · ${w}×${h}`}

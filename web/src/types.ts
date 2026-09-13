@@ -59,6 +59,9 @@ export interface ContainerSummary extends ContainerGrid {
   updated_at: string;
   tags: Tag[];
   photos: Photo[];
+  /** Own first photo, else the first photo on an item inside it; null if neither. */
+  cover_photo: Photo | null;
+  cover_photo_source: 'container' | 'item' | null;
   /** Items directly in this container. */
   item_count: number;
   /** Containers nested directly inside it — bins on a grid, boxes on a shelf. */

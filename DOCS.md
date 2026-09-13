@@ -73,6 +73,17 @@ in its own cell at its real footprint, with the number of items in it.
 - **Bins with no cell yet** wait in a strip under the layout — useful when
   you've labelled a batch of bins before deciding where they go. Tap one
   in Rearrange mode, then tap a cell.
+- **Bins show a photo** when there is one to show, which is usually the
+  quickest way to find something. A bin uses its own first photo; if it
+  hasn't got one, it falls back to the first photo of an item inside it, so
+  photographing the contents is enough. The cell name, bin name and item
+  count sit on top of the picture. (The fallback only looks at items
+  directly in that bin, not in containers nested deeper inside it.)
+
+Cells are drawn square at a fixed size — 88px on a desktop, 60px on a phone
+— so a 2x2 bin really is twice the size of a 1x1 and the layout matches the
+physical tray. A grid too wide for the screen scrolls sideways on its own
+rather than shrinking the cells.
 
 Bins that would overlap, or hang off the edge, are refused with a message
 naming the bin in the way, and a grid can't be shrunk out from under the
@@ -200,6 +211,25 @@ like `https://your-ha-domain/app/...`, which serves the HA UI shell for
 every path rather than LabelForge's JSON API. If the panel shows "Could not
 reach LabelForge", check that option and that the LabelForge add-on is
 running.
+
+## Cropping photos
+
+Photos are shown square in grid cells and cropped to fit on cards, so what
+the camera happened to centre on isn't necessarily what you end up seeing.
+Every photo can be cropped to choose that for yourself:
+
+- **When adding one** — picking a file or taking a photo opens a square
+  crop first. Drag the picture to move it under the square and use the zoom
+  slider to close in. **Use whole photo** skips cropping and uploads the
+  original exactly as it was.
+- **Afterwards** — every photo already in StorBox has a small **Crop**
+  button in its corner. Re-cropping keeps that photo's place in the order,
+  which matters because a container's first photo is the one used as its
+  cover picture.
+
+Cropping happens in your browser before anything is uploaded, and the
+cropped version replaces the original — so crop from the whole picture the
+first time if you might want a wider framing later.
 
 ## Camera access for scanning and taking photos
 

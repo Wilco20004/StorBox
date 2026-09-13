@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { Container, Location } from '../types';
+import { Container, Location, Photo } from '../types';
 import { getTagsForContainer } from './tags';
 
 /** Guards the ancestor walk against a cycle that somehow got past validation. */
@@ -83,6 +83,34 @@ export function getPhotos(id: string) {
 }
 
 /**
+ * The picture to show for a container at a glance: its own first photo, else
+ * the first photo on an item directly inside it. A bin you never photographed
+ * still shows what's in it once you've photographed its contents — which is the
+ * common case, since bins tend to get named for their size ("2x1 3cm"), not
+ * their contents. Deliberately does not recurse into nested containers: every
+ * listing calls this, and a cover dredged up from three levels down would
+ * confuse more than it helps.
+ */
+export function coverPhoto(id: string): { photo: Photo; source: 'container' | 'item' } | null {
+  const own = db
+    .prepare('SELECT id, file_path, created_at FROM container_photos WHERE container_id = ? ORDER BY created_at LIMIT 1')
+    .get(id) as Photo | undefined;
+  if (own) return { photo: own, source: 'container' };
+
+  const fromItem = db
+    .prepare(
+      `SELECT item_photos.id, item_photos.file_path, item_photos.created_at
+       FROM item_photos
+       JOIN items ON items.id = item_photos.item_id
+       WHERE items.container_id = ?
+       ORDER BY items.name, item_photos.created_at
+       LIMIT 1`
+    )
+    .get(id) as Photo | undefined;
+  return fromItem ? { photo: fromItem, source: 'item' } : null;
+}
+
+/**
  * The shape every list of containers renders: identity, placement, grid facts,
  * and the counts needed to say "6 bins, 23 items" without a second request.
  */
@@ -90,11 +118,14 @@ export function containerSummary(container: Container) {
   const childCount = (
     db.prepare('SELECT COUNT(*) AS n FROM containers WHERE parent_id = ?').get(container.id) as { n: number }
   ).n;
+  const cover = coverPhoto(container.id);
   return {
     ...container,
     cell: container.grid_x !== null && container.grid_y !== null ? cellLabel(container.grid_x, container.grid_y) : null,
     tags: getTagsForContainer(container.id),
     photos: getPhotos(container.id),
+    cover_photo: cover?.photo ?? null,
+    cover_photo_source: cover?.source ?? null,
     item_count: directItemCount(container.id),
     child_count: childCount,
     total_item_count: totalItemCount(container.id),

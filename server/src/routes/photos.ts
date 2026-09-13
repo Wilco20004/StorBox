@@ -24,6 +24,30 @@ const upload = multer({
   },
 });
 
+/**
+ * Swaps the image behind an existing photo, keeping its row id and created_at.
+ * That matters: photos are ordered by created_at and the first one is what
+ * shows as a container's cover, so re-cropping a cover photo must not quietly
+ * demote it to the back of the queue the way delete-then-upload would.
+ */
+function replacePhotoHandler(table: 'item_photos' | 'container_photos' | 'location_photos') {
+  return (req: any, res: any) => {
+    const photo = db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(req.params.id) as Photo | undefined;
+    if (!photo) {
+      if (req.file) fs.unlink(path.join(UPLOADS_DIR, req.file.filename), () => {});
+      return res.status(404).json({ error: 'Photo not found' });
+    }
+    if (!req.file) return res.status(400).json({ error: 'photo file is required' });
+
+    const previous = photo.file_path;
+    db.prepare(`UPDATE ${table} SET file_path = ? WHERE id = ?`).run(req.file.filename, photo.id);
+    // Only after the row points at the new file, so a failed unlink can never
+    // leave a row referencing a deleted image.
+    fs.unlink(path.join(UPLOADS_DIR, previous), () => {});
+    res.json(db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(photo.id));
+  };
+}
+
 // Mounted at /api/items/:itemId/photos
 export const itemPhotosRouter = Router({ mergeParams: true });
 
@@ -46,6 +70,8 @@ itemPhotosRouter.post('/', upload.single('photo'), (req, res) => {
 
 // Mounted at /api/item-photos
 export const itemPhotoDeleteRouter = Router();
+
+itemPhotoDeleteRouter.put('/:id', upload.single('photo'), replacePhotoHandler('item_photos'));
 
 itemPhotoDeleteRouter.delete('/:id', (req, res) => {
   const photo = db.prepare('SELECT * FROM item_photos WHERE id = ?').get(req.params.id) as Photo | undefined;
@@ -78,6 +104,8 @@ containerPhotosRouter.post('/', upload.single('photo'), (req, res) => {
 // Mounted at /api/container-photos
 export const containerPhotoDeleteRouter = Router();
 
+containerPhotoDeleteRouter.put('/:id', upload.single('photo'), replacePhotoHandler('container_photos'));
+
 containerPhotoDeleteRouter.delete('/:id', (req, res) => {
   const photo = db.prepare('SELECT * FROM container_photos WHERE id = ?').get(req.params.id) as Photo | undefined;
   if (!photo) return res.status(404).json({ error: 'Photo not found' });
@@ -108,6 +136,8 @@ locationPhotosRouter.post('/', upload.single('photo'), (req, res) => {
 
 // Mounted at /api/location-photos
 export const locationPhotoDeleteRouter = Router();
+
+locationPhotoDeleteRouter.put('/:id', upload.single('photo'), replacePhotoHandler('location_photos'));
 
 locationPhotoDeleteRouter.delete('/:id', (req, res) => {
   const photo = db.prepare('SELECT * FROM location_photos WHERE id = ?').get(req.params.id) as Photo | undefined;

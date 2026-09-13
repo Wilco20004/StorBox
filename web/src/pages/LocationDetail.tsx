@@ -54,6 +54,7 @@ export default function LocationDetail() {
           photos={location.photos}
           onUpload={(file) => api.uploadLocationPhoto(location.id, file).then(reload)}
           onDelete={(photoId) => api.deleteLocationPhoto(photoId).then(reload)}
+          onReplace={(photoId, file) => api.replaceLocationPhoto(photoId, file).then(reload)}
         />
       </section>
 
@@ -69,8 +70,8 @@ export default function LocationDetail() {
           {location.containers.map((c) => (
             <Link key={c.id} to={`/containers/${c.id}`} className="entity-card">
               <div className="entity-card-photo">
-                {c.photos[0] ? (
-                  <img src={`uploads/${c.photos[0].file_path}`} alt={c.name} />
+                {c.cover_photo ? (
+                  <img src={`uploads/${c.cover_photo.file_path}`} alt={c.name} />
                 ) : (
                   <div className="entity-card-photo-placeholder">📦</div>
                 )}

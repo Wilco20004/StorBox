@@ -381,6 +381,7 @@ export default function ItemDetail() {
           photos={item.photos}
           onUpload={(file) => api.uploadItemPhoto(item.id, file).then(reload)}
           onDelete={(photoId) => api.deleteItemPhoto(photoId).then(reload)}
+          onReplace={(photoId, file) => api.replaceItemPhoto(photoId, file).then(reload)}
         />
       </section>
     </div>

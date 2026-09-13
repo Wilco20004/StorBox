@@ -180,8 +180,8 @@ export default function ContainerDetail() {
               {container.children.map((c) => (
                 <Link key={c.id} to={`/containers/${c.id}`} className="entity-card">
                   <div className="entity-card-photo">
-                    {c.photos[0] ? (
-                      <img src={`uploads/${c.photos[0].file_path}`} alt={c.name} />
+                    {c.cover_photo ? (
+                      <img src={`uploads/${c.cover_photo.file_path}`} alt={c.name} />
                     ) : (
                       <div className="entity-card-photo-placeholder">📦</div>
                     )}
@@ -267,6 +267,7 @@ export default function ContainerDetail() {
           photos={container.photos}
           onUpload={(file) => api.uploadContainerPhoto(container.id, file).then(reload)}
           onDelete={(photoId) => api.deleteContainerPhoto(photoId).then(reload)}
+          onReplace={(photoId, file) => api.replaceContainerPhoto(photoId, file).then(reload)}
         />
       </section>
 

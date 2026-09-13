@@ -1,5 +1,33 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.10.0
+
+- Bins on a grid layout now show a **photo**, so a tray reads at a glance
+  instead of making you decode names like "2x1 3cm". A bin uses its own
+  first photo; if it hasn't got one, it falls back to the first photo of an
+  item inside it — which is the common case, since bins tend to get named
+  for their size rather than their contents. The picture fills the cell
+  with the cell name, bin name and item count riding on a gradient scrim so
+  they stay readable over any image.
+- The same cover-photo fallback now applies to container cards on the
+  dashboard, location pages and inside other containers, so a photographed
+  item gives its container a picture everywhere, not just on grids.
+- Photos can now be **cropped**, since square cells and cards centre-crop
+  whatever the camera happened to frame. Picking or taking a photo opens a
+  square crop with drag-to-pan and a zoom slider (**Use whole photo** skips
+  it and uploads the original untouched, as before). Photos already in the
+  app get a **Crop** button, so existing pictures can be re-framed without
+  re-taking them. Works on containers, items and locations.
+- Re-cropping keeps the photo's identity — same row, same timestamp — so
+  re-framing a container's first photo doesn't quietly demote it out of
+  being that container's cover picture, the way deleting and re-uploading
+  would have.
+- Grid cells are now **square and a fixed size** rather than stretching to
+  fill the window. On a wide screen a 2x2 bin was being drawn 208x72 — the
+  same shape as a 1x1 — which misrepresented the tray and letterboxed the
+  new photos. Cells are now 88px on a desktop and 60px on a phone, and a
+  2x2 is drawn at exactly twice a 1x1 in both directions.
+
 ## 1.9.0
 
 - Containers can now go **inside other containers**, to any depth — a shelf
